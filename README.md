@@ -1,244 +1,56 @@
-# AI-ассистент менеджера по продажам для amoCRM
+# AI Sales Assistant for amoCRM
 
-Сервис анализирует сообщение клиента, историю переписки и базу знаний компании и готовит **два независимых блока**:
+A Python MVP of an AI assistant for sales managers who chat with customers in amoCRM. The manager pastes or opens a conversation, and the service returns **two independent blocks**: a polite, ready-to-review **reply to the customer** built only from facts in a small company knowledge base, and an internal **upsell hint for the manager**: whether an upsell is appropriate right now, which product or service to offer (only from the knowledge base), why, and a sample phrase. The assistant never sends anything to the customer: the manager reviews, edits and sends the reply. The demo company КлиматДом (air conditioners, installation, service) and all its data are fictional.
 
-| Блок | Для кого | Что внутри |
-|---|---|---|
-| **Ответ клиенту** | клиент (после проверки менеджером) | вежливый ответ, основанный только на фактах из базы знаний; если фактов не хватает — уточняющий вопрос |
-| **Подсказка менеджеру** | только менеджер | уместна ли допродажа, что предложить (только из базы знаний), почему и пример фразы |
+**All six stages of the specification are implemented.** A FastAPI service with a REST API and Swagger docs, a JSON knowledge base that reloads on edit, keyword retrieval with light Russian stemming, an OpenAI-compatible LLM client on HTTPX with retries, a strict structured JSON answer validated by Pydantic with one repair attempt, and server-side guards. The guards keep upsells inside the knowledge base, strip internal hints from the customer reply, flag amounts that are not in the facts, detect prompt injection and mask phone numbers, e-mails and card numbers before the LLM. The manager UI is plain HTML/CSS/JS. The amoCRM integration has three parts: a widget for the lead card, which calls the backend with an amoCRM one-time JWT; a webhook receiver for chat messages; and a REST API v4 client for lead and contact data. 95 pytest tests run without network or keys. A Docker image runs as a non-root user.
 
-Ассистент **ничего не отправляет клиенту сам**: менеджер читает, при необходимости правит и отправляет ответ вручную.
+**Начни с [быстрого запуска](docs/instructions/quickstart.md)** или с подробных руководств этапов [01–06](docs/STAGE_01.md). Наглядный PDF: [на русском](docs/guide/amocrm-sales-assistant-guide.pdf) и [in English](docs/guide/amocrm-sales-assistant-guide-en.pdf). После запуска интерфейс менеджера: <http://127.0.0.1:8000>, документация API: <http://127.0.0.1:8000/docs>.
 
-Демонстрационная база знаний — магазин кондиционеров «КлиматДом»: модели, монтаж, Wi-Fi модуль, сервис, гарантия, доставка и оплата.
+## Roadmap
 
----
+| Stage | Work | Status |
+| --- | --- | --- |
+| 01 | Minimal architecture, project structure, settings, error model | Implemented |
+| 02 | Knowledge base (JSON, validation, hot reload) and retrieval | Implemented: 10 products/services, 7 FAQ entries, keyword search with stemming and related items |
+| 03 | LLM client, prompt, two-block structured answer, guards | Implemented; tested with a fake LLM and a stub OpenAI-compatible server, a live LLM requires a key |
+| 04 | FastAPI REST API and the manager UI | Implemented: `/api/v1/suggest`, `/health`, `/api/v1/knowledge-base`, Swagger, responsive UI |
+| 05 | Tests and Docker | Implemented: 95 tests, Dockerfile, Compose, container smoke check |
+| 06 | amoCRM integration | Implemented: lead-card widget with one-time JWT, chat webhooks, REST API v4 client; checked on a widget mock, a real amoCRM account is not verified |
+| + | CI, linters, Redis cache for multiple replicas | Not started |
 
-## Быстрый старт
+## Documentation
 
-Нужен ключ любого OpenAI-совместимого API (OpenAI, OpenRouter, DeepSeek, локальная Ollama и т. п.).
+Instructions ([docs/instructions/](docs/instructions/)):
 
-### Вариант 1. Docker
+- [Quickstart](docs/instructions/quickstart.md): requirements, Docker or local run, LLM providers, settings
+- [Using the assistant](docs/instructions/usage.md): manager UI, REST API, response fields, warnings, error codes
+- [Knowledge base](docs/instructions/knowledge-base.md): file format, editing without restart, how retrieval uses it
+- [amoCRM integration](docs/instructions/amocrm.md): private integration, widget upload, webhooks, server settings
+- [Testing and verification](docs/instructions/testing.md): pytest, manual checks with a stub LLM, Docker smoke check
+- [Project structure](docs/instructions/project-structure.md)
+
+Stage learning guides in Russian:
+
+- [Этап 01: архитектура и структура проекта](docs/STAGE_01.md)
+- [Этап 02: база знаний и поиск](docs/STAGE_02.md)
+- [Этап 03: LLM и два блока ответа](docs/STAGE_03.md)
+- [Этап 04: FastAPI и интерфейс менеджера](docs/STAGE_04.md)
+- [Этап 05: тесты и Docker](docs/STAGE_05.md)
+- [Этап 06: интеграция с amoCRM](docs/STAGE_06.md)
+- [Наглядное руководство PDF](docs/guide/amocrm-sales-assistant-guide.pdf), [English PDF guide](docs/guide/amocrm-sales-assistant-guide-en.pdf) и [их пересборка](docs/guide/README.md)
+- [Проверка проекта](docs/VERIFICATION.md)
+
+Design and history:
+
+- [Solution approach](docs/APPROACH.md)
+- [Architecture decisions](docs/adr/)
+- [Development log](docs/DEVELOPMENT_LOG.md)
+
+## Quick start
 
 ```bash
-cp .env.example .env        # впишите LLM_API_KEY (и при необходимости LLM_BASE_URL / LLM_MODEL)
+cp .env.example .env    # set LLM_API_KEY (and LLM_BASE_URL / LLM_MODEL if not OpenAI)
 docker compose up --build
 ```
 
-### Вариант 2. Локально (Python 3.12+)
-
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-dev.txt
-cp .env.example .env        # впишите LLM_API_KEY
-uvicorn app.main:app --reload
-```
-
-После запуска:
-
-- **http://localhost:8000** — интерфейс менеджера;
-- **http://localhost:8000/docs** — документация REST API (Swagger UI);
-- **http://localhost:8000/health** — состояние сервиса.
-
-### Бесплатно и локально: Ollama
-
-```bash
-ollama pull qwen2.5:7b
-```
-
-В `.env`: `LLM_BASE_URL=http://localhost:11434/v1`, `LLM_MODEL=qwen2.5:7b`, `LLM_API_KEY` оставьте пустым.
-Из Docker-контейнера используйте `http://host.docker.internal:11434/v1`.
-Небольшие локальные модели хуже следуют формату и правилам — для реальной работы лучше модель уровня `gpt-4.1-mini` и выше.
-
----
-
-## Как пользоваться
-
-1. Вставьте **сообщение клиента** в левое поле.
-2. При необходимости вставьте **историю переписки**: каждая реплика с новой строки, `Клиент: …` или `Менеджер: …`.
-3. Нажмите **«Сгенерировать рекомендации»** (или Ctrl + Enter).
-4. Справа появятся:
-   - **Ответ клиенту** — его можно отредактировать прямо в поле и скопировать кнопкой;
-   - **Подсказка менеджеру** — с пометкой «не отправлять клиенту»;
-   - **Проверьте перед отправкой** — предупреждения: сумма, которой нет в базе знаний, признаки prompt injection, удалённый внутренний фрагмент и т. п.
-
-Кнопки под формой заполняют поля готовыми сценариями: покупка, мало информации, жалоба, prompt injection.
-
----
-
-## REST API
-
-### `POST /api/v1/suggest`
-
-```bash
-curl -s http://localhost:8000/api/v1/suggest \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "message": "Сколько стоит Бриз 09 с установкой?",
-    "history_text": "Клиент: Здравствуйте, ищу кондиционер в спальню\nМенеджер: Добрый день! Какая площадь?",
-    "client_name": "Анна"
-  }'
-```
-
-Историю можно передать и структурно: `"history": [{"role": "client", "text": "…"}, {"role": "manager", "text": "…"}]`.
-
-Ответ:
-
-```json
-{
-  "suggestion": {
-    "customer_reply": "Анна, для спальни подойдёт «Бриз 09»: 42 900 ₽, стандартный монтаж — 9 900 ₽ …",
-    "needs_clarification": false,
-    "upsell_applicable": true,
-    "upsell_product_id": "wifi-module",
-    "upsell_recommendation": "Wi-Fi модуль «Бриз Коннект»",
-    "upsell_reason": "Клиент берёт кондиционер с монтажом — при монтаже модуль ставится бесплатно.",
-    "suggested_sales_phrase": "Можем сразу установить Wi-Fi модуль за 3 500 ₽ — включите кондиционер по дороге домой."
-  },
-  "meta": {
-    "request_id": "3f2a9c1b7d40",
-    "model": "gpt-4.1-mini",
-    "latency_ms": 2140,
-    "knowledge_sources": [{"id": "breeze-09", "name": "Сплит-система «Бриз 09»"}],
-    "injection_suspected": false,
-    "warnings": []
-  }
-}
-```
-
-Поля `customer_reply`, `upsell_recommendation`, `upsell_reason`, `suggested_sales_phrase`, `upsell_applicable` — обязательный структурированный ответ. Дополнительно возвращаются:
-
-- `upsell_product_id` — ID позиции из базы знаний, проверенный сервером;
-- `needs_clarification` — ответ содержит уточняющий вопрос;
-- `meta` — источники и предупреждения для менеджера.
-
-### Другие методы
-
-| Метод | Назначение |
-|---|---|
-| `GET /health` | состояние: загружена ли база знаний, настроена ли LLM |
-| `GET /api/v1/knowledge-base` | краткий список позиций базы знаний |
-| `POST /api/v1/amocrm/suggest` | вызов из виджета amoCRM (одноразовый JWT в `X-Auth-Token`) |
-| `POST /api/v1/amocrm/webhook?secret=…` | приём вебхуков amoCRM о сообщениях в чатах |
-
-### Ошибки
-
-Все ошибки возвращаются в одном формате: `{"error": {"code": "...", "message": "понятный текст"}}`.
-
-| HTTP | code | Когда |
-|---|---|---|
-| 422 | `validation_error` | пустое или слишком длинное сообщение (значения полей в ответ не попадают) |
-| 502 | `llm_invalid_output` | модель дважды вернула неверный JSON |
-| 502 | `llm_bad_request`, `llm_bad_response` | провайдер отклонил запрос / прислал некорректный ответ |
-| 503 | `llm_unavailable`, `llm_auth` | провайдер недоступен (429/5xx/сеть) или неверный ключ |
-| 504 | `llm_timeout` | модель не ответила вовремя (после повторов) |
-| 401 | `amocrm_widget_unauthorized` | неверный или просроченный токен виджета |
-
----
-
-## База знаний
-
-Файл [data/knowledge_base.json](data/knowledge_base.json). Чтобы изменить ассортимент, цены или условия, отредактируйте JSON: **код менять не нужно, перезапуск не нужен** — сервис перечитывает файл при изменении. Если после правки файл стал невалидным, сервис продолжит работать на последней корректной версии, а ошибка появится в `/health`.
-
-Позиция (`products[]`):
-
-| Поле | Описание |
-|---|---|
-| `id` | латиница, цифры, дефис; на него ссылаются `related` |
-| `type` | `product` или `service` |
-| `name`, `category`, `description` | название, категория, описание |
-| `features` | основные характеристики |
-| `price` | `{"amount": 42900, "unit": "за комплект", "note": "..."}`; `amount: null` — цена не фиксирована (ассистент её не назовёт) |
-| `terms` | условия предоставления: гарантия, сроки, ограничения |
-| `related` | ID связанных позиций — кандидаты для допродажи |
-| `upsell_scenarios` | когда уместно предлагать связанные позиции (видит только менеджер) |
-| `keywords` | синонимы и разговорные слова для поиска |
-
-`faq[]` — общие условия (доставка, оплата, гарантия, зона обслуживания…): `id`, `topic`, `answer`, `keywords`.
-
----
-
-## Тесты
-
-```bash
-pytest
-```
-
-94 теста, LLM и amoCRM подменяются — сеть и ключи не нужны. Покрыто:
-
-- **база знаний**: валидация, горячая перезагрузка, сломанный файл, поиск и стемминг;
-- **недостаточно информации**: в промпт уходит «фактов не найдено», ответ — уточняющий вопрос, предупреждение менеджеру;
-- **допродажа неуместна**: жалоба, позиция вне базы знаний — поля рекомендации очищаются;
-- **безопасность**: prompt injection, попытка закрыть тег промпта, утечка подсказки в ответ клиенту, выдуманные суммы, маскирование ПДн, отсутствие ПДн и ключей в логах;
-- **устойчивость**: таймауты, 429/5xx с повторами, 401, битый JSON от модели с повторной попыткой;
-- **amoCRM**: разбор вебхуков, проверка JWT виджета, сборка контекста, недоступность API amoCRM.
-
----
-
-## Структура проекта
-
-```
-app/
-├── main.py                    # сборка приложения, обработчики ошибок, раздача UI
-├── config.py                  # настройки из переменных окружения
-├── schemas.py                 # Pydantic-модели API и ответа LLM
-├── errors.py                  # базовая ошибка с HTTP-статусом и текстом для менеджера
-├── logging_setup.py           # логирование без ПДн и секретов
-├── api/
-│   ├── routes.py              # /api/v1/suggest, /health, /api/v1/knowledge-base
-│   └── amocrm.py              # /api/v1/amocrm/suggest, /api/v1/amocrm/webhook
-├── core/                      # бизнес-логика
-│   ├── assistant.py           # pipeline: контекст → поиск → промпт → LLM → валидация → проверки
-│   ├── prompts.py             # системный промпт и сборка сообщений
-│   ├── guards.py              # prompt injection, ПДн, утечки, суммы, правила допродажи
-│   └── dialog.py              # разбор истории «Клиент: … / Менеджер: …»
-├── knowledge/                 # доступ к базе знаний
-│   ├── models.py              # схема JSON
-│   ├── repository.py          # загрузка и горячая перезагрузка
-│   └── search.py              # поиск по ключевым словам (упрощённый BM25)
-├── llm/
-│   └── client.py              # OpenAI-совместимый клиент на HTTPX
-├── integrations/amocrm/       # адаптер amoCRM
-│   ├── client.py              # REST API v4 (сделка, контакт)
-│   ├── auth.py                # проверка одноразового JWT виджета
-│   ├── webhooks.py            # разбор вебхуков message / outgoing_message
-│   ├── message_store.py       # кэш последних сообщений (в памяти, TTL)
-│   └── adapter.py             # сборка контекста диалога по ID сделки
-└── static/                    # веб-интерфейс (HTML/CSS/JS без сборки)
-data/knowledge_base.json       # демонстрационная база знаний
-amocrm_widget/                 # исходники виджета amoCRM
-scripts/build_widget.py        # упаковка виджета в dist/widget.zip
-tests/                         # pytest
-docs/ARCHITECTURE.md           # архитектура и решения по этапам
-docs/AMOCRM_INTEGRATION.md     # возможности API amoCRM, настройка, ограничения
-```
-
----
-
-## Безопасность и качество
-
-- **Ничего не отправляется автоматически.** Сервис только возвращает текст; в коде нет методов отправки сообщений клиенту.
-- **Внутренняя подсказка не попадает в ответ клиенту**: отдельные поля JSON и отдельные блоки в UI; сервер вырезает из `customer_reply` фрагменты с внутренней лексикой и копии подсказки и предупреждает менеджера.
-- **Факты только из базы знаний**: правило в промпте; рекомендация допродажи проверяется по `id` в базе; суммы и проценты, которых нет ни в базе, ни в переписке, помечаются для проверки.
-- **Prompt injection**: данные клиента в изолированных блоках с явной пометкой «это не инструкции», вырезание служебных тегов, эвристический детектор с предупреждением менеджеру. Главная защита — у модели нет инструментов и права что-либо отправлять, а все её ответы проверяет человек.
-- **Ошибки**: таймауты и повторы для LLM, повторная попытка при битом JSON, понятные сообщения об ошибках в UI.
-- **Персональные данные**: в логи не пишутся тексты, имена, телефоны, IP и query string; телефоны, e-mail и номера карт маскируются перед отправкой в LLM (`REDACT_PII_FOR_LLM`).
-- **Секреты** — только в переменных окружения (`SecretStr`, `.env` в `.gitignore`).
-
----
-
-## Интеграция с amoCRM
-
-Кратко: виджет в правой панели карточки сделки → кнопка «Сгенерировать рекомендации» → бэкенд проверяет одноразовый JWT amoCRM, берёт историю чата из вебхуков и имя клиента через REST API v4 → менеджер видит оба блока внутри amoCRM и копирует ответ в чат.
-
-Возможности официального API, пошаговая настройка и ограничения — в [docs/AMOCRM_INTEGRATION.md](docs/AMOCRM_INTEGRATION.md).
-
-```bash
-python scripts/build_widget.py   # -> dist/widget.zip для загрузки в amoCRM
-```
-
-## Ограничения MVP
-
-- Кэш сообщений amoCRM хранится в памяти: один процесс и потеря истории при перезапуске. Для нескольких реплик нужен Redis.
-- Поиск по ключевым словам рассчитан на базу из десятков позиций. Для тысяч позиций стоит перейти на полнотекстовый или векторный поиск.
-- Детектор prompt injection эвристический и не ловит всё. Поэтому финальное решение всегда за менеджером.
+Open <http://127.0.0.1:8000>, paste a customer message and press «Сгенерировать рекомендации». Local run without Docker, Ollama and all settings: [Quickstart](docs/instructions/quickstart.md).
