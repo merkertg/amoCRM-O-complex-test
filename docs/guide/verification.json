@@ -2,92 +2,296 @@
   "checked_at": "2026-10-20",
   "base_commit": "df465b3",
   "environment": {
-    "os": {"ru": "macOS, Apple Silicon", "en": "macOS, Apple Silicon"},
+    "os": {
+      "ru": "macOS, Apple Silicon",
+      "en": "macOS, Apple Silicon"
+    },
     "python": "3.12.15",
     "docker": "29.8.2"
   },
-  "tests": {"total": 95, "passed": 95, "failed": 0, "skipped": 0, "seconds": "0.3"},
+  "tests": {
+    "total": 95,
+    "passed": 95,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": "0.22"
+  },
   "checks": [
     {
-      "name": {"ru": "Автотесты", "en": "Automated tests"},
+      "name": {
+        "ru": "Автотесты",
+        "en": "Automated tests"
+      },
       "command": "pytest",
-      "result": {"ru": "95 passed, без сети и ключей", "en": "95 passed, no network or keys"},
+      "result": {
+        "ru": "95 passed, без сети и ключей",
+        "en": "95 passed, no network or keys"
+      },
       "status": "pass"
     },
     {
-      "name": {"ru": "Сервер и заглушка LLM", "en": "Server with a stub LLM"},
+      "name": {
+        "ru": "Сервер и заглушка LLM",
+        "en": "Server with a stub LLM"
+      },
       "command": "uvicorn app.main:app + curl",
-      "result": {"ru": "12 запросов, ожидаемые коды и тела", "en": "12 requests, expected codes and bodies"},
+      "result": {
+        "ru": "12 запросов, ожидаемые коды и тела",
+        "en": "12 requests, expected codes and bodies"
+      },
       "status": "pass"
     },
     {
-      "name": {"ru": "Интерфейс", "en": "Manager UI"},
+      "name": {
+        "ru": "Интерфейс",
+        "en": "Manager UI"
+      },
       "command": "browser",
-      "result": {"ru": "4 сценария; 375 px без прокрутки", "en": "4 scenarios; 375 px without scrolling"},
+      "result": {
+        "ru": "4 сценария; 375 px без прокрутки",
+        "en": "4 scenarios; 375 px without scrolling"
+      },
       "status": "pass"
     },
     {
-      "name": {"ru": "Виджет amoCRM", "en": "amoCRM widget"},
+      "name": {
+        "ru": "Виджет amoCRM",
+        "en": "amoCRM widget"
+      },
       "command": "widget mock + JWT",
-      "result": {"ru": "оба блока, CORS, консоль без ошибок", "en": "both blocks, CORS, clean console"},
+      "result": {
+        "ru": "оба блока, CORS, консоль без ошибок",
+        "en": "both blocks, CORS, clean console"
+      },
       "status": "pass"
     },
     {
-      "name": {"ru": "Логи", "en": "Logs"},
+      "name": {
+        "ru": "Логи",
+        "en": "Logs"
+      },
       "command": "server log review",
-      "result": {"ru": "нет текстов, имён, IP, secret", "en": "no texts, names, IPs, secret"},
+      "result": {
+        "ru": "нет текстов, имён, IP, secret",
+        "en": "no texts, names, IPs, secret"
+      },
       "status": "pass"
     },
     {
-      "name": {"ru": "Сборка образа", "en": "Image build"},
+      "name": {
+        "ru": "Сборка образа",
+        "en": "Image build"
+      },
       "command": "docker build .",
-      "result": {"ru": "успешно", "en": "success"},
+      "result": {
+        "ru": "успешно",
+        "en": "success"
+      },
       "status": "pass"
     },
     {
-      "name": {"ru": "Контейнер", "en": "Container"},
+      "name": {
+        "ru": "Контейнер",
+        "en": "Container"
+      },
       "command": "docker run + curl /health + id",
-      "result": {"ru": "status ok, uid=10001(appuser)", "en": "status ok, uid=10001(appuser)"},
+      "result": {
+        "ru": "status ok, uid=10001(appuser)",
+        "en": "status ok, uid=10001(appuser)"
+      },
       "status": "pass"
     },
     {
-      "name": {"ru": "Архив виджета", "en": "Widget archive"},
+      "name": {
+        "ru": "Архив виджета",
+        "en": "Widget archive"
+      },
       "command": "python scripts/build_widget.py",
-      "result": {"ru": "dist/widget.zip, 10 файлов", "en": "dist/widget.zip, 10 files"},
-      "status": "pass"
-    },
-    {
-      "name": {"ru": "Ссылки в документации", "en": "Documentation links"},
-      "command": "link checker",
-      "result": {"ru": "файлы и якоря существуют", "en": "files and anchors exist"},
-      "status": "pass"
-    },
-    {
-      "name": {"ru": "PDF-руководство", "en": "PDF guide"},
-      "command": "python scripts/build_guide.py",
-      "result": {"ru": "RU и EN собраны и просмотрены постранично", "en": "RU and EN built and reviewed page by page"},
+      "result": {
+        "ru": "dist/widget.zip, 10 файлов",
+        "en": "dist/widget.zip, 10 files"
+      },
       "status": "pass"
     }
   ],
   "http": [
-    {"request": "GET /health", "status": "200", "body": {"ru": "status: ok, 10 позиций, 7 FAQ", "en": "status: ok, 10 items, 7 FAQ"}},
-    {"request": "POST /api/v1/suggest", "status": "200", "body": {"ru": "покупка: breeze-09, допродажа wifi-module", "en": "purchase: breeze-09, upsell wifi-module"}},
-    {"request": "POST /api/v1/suggest", "status": "200", "body": {"ru": "жалоба: faq-repair, допродажа неуместна", "en": "complaint: faq-repair, upsell not appropriate"}},
-    {"request": "POST /api/v1/suggest", "status": "200", "body": {"ru": "injection: injection_suspected true", "en": "injection: injection_suspected true"}},
-    {"request": "POST /api/v1/suggest", "status": "422", "body": {"ru": "validation_error, значения не возвращаются", "en": "validation_error, values not echoed"}},
-    {"request": "POST /api/v1/amocrm/webhook", "status": "200", "body": {"ru": "stored 1; повтор id — stored 0", "en": "stored 1; repeated id — stored 0"}},
-    {"request": "POST …/webhook?secret=wrong", "status": "403", "body": "amocrm_webhook_forbidden"},
-    {"request": "POST /api/v1/amocrm/suggest", "status": "200", "body": {"ru": "JWT: message_source webhook, история 2", "en": "JWT: message_source webhook, history 2"}},
-    {"request": "POST /api/v1/amocrm/suggest", "status": "401", "body": {"ru": "без токена: amocrm_widget_unauthorized", "en": "no token: amocrm_widget_unauthorized"}},
-    {"request": "POST /api/v1/amocrm/suggest", "status": "422", "body": {"ru": "нет сообщений: amocrm_no_message", "en": "no messages: amocrm_no_message"}},
-    {"request": "OPTIONS /api/v1/amocrm/suggest", "status": "200", "body": {"ru": "CORS: X-Auth-Token разрешён", "en": "CORS: X-Auth-Token allowed"}},
-    {"request": "POST /api/v1/suggest", "status": "503", "body": {"ru": "модель остановлена: 3 попытки, llm_unavailable", "en": "model stopped: 3 attempts, llm_unavailable"}}
+    {
+      "request": "GET /health",
+      "status": "200",
+      "body": {
+        "ru": "status: ok, 10 позиций, 7 FAQ",
+        "en": "status: ok, 10 items, 7 FAQ"
+      }
+    },
+    {
+      "request": "POST /api/v1/suggest",
+      "status": "200",
+      "body": {
+        "ru": "покупка: breeze-09, допродажа wifi-module",
+        "en": "purchase: breeze-09, upsell wifi-module"
+      }
+    },
+    {
+      "request": "POST /api/v1/suggest",
+      "status": "200",
+      "body": {
+        "ru": "жалоба: faq-repair, допродажа неуместна",
+        "en": "complaint: faq-repair, upsell not appropriate"
+      }
+    },
+    {
+      "request": "POST /api/v1/suggest",
+      "status": "200",
+      "body": {
+        "ru": "injection: injection_suspected true",
+        "en": "injection: injection_suspected true"
+      }
+    },
+    {
+      "request": "POST /api/v1/suggest",
+      "status": "422",
+      "body": {
+        "ru": "validation_error, значения не возвращаются",
+        "en": "validation_error, values not echoed"
+      }
+    },
+    {
+      "request": "POST /api/v1/amocrm/webhook",
+      "status": "200",
+      "body": {
+        "ru": "stored 1; повтор id — stored 0",
+        "en": "stored 1; repeated id — stored 0"
+      }
+    },
+    {
+      "request": "POST …/webhook?secret=wrong",
+      "status": "403",
+      "body": "amocrm_webhook_forbidden"
+    },
+    {
+      "request": "POST /api/v1/amocrm/suggest",
+      "status": "200",
+      "body": {
+        "ru": "JWT: message_source webhook, история 2",
+        "en": "JWT: message_source webhook, history 2"
+      }
+    },
+    {
+      "request": "POST /api/v1/amocrm/suggest",
+      "status": "401",
+      "body": {
+        "ru": "без токена: amocrm_widget_unauthorized",
+        "en": "no token: amocrm_widget_unauthorized"
+      }
+    },
+    {
+      "request": "POST /api/v1/amocrm/suggest",
+      "status": "422",
+      "body": {
+        "ru": "нет сообщений: amocrm_no_message",
+        "en": "no messages: amocrm_no_message"
+      }
+    },
+    {
+      "request": "OPTIONS /api/v1/amocrm/suggest",
+      "status": "200",
+      "body": {
+        "ru": "CORS: X-Auth-Token разрешён",
+        "en": "CORS: X-Auth-Token allowed"
+      }
+    },
+    {
+      "request": "POST /api/v1/suggest",
+      "status": "503",
+      "body": {
+        "ru": "модель остановлена: 3 попытки, llm_unavailable",
+        "en": "model stopped: 3 attempts, llm_unavailable"
+      }
+    }
   ],
   "not_verified": [
-    {"ru": "Качество ответов настоящей LLM: во время разработки не было ключа API.", "en": "Answer quality of a real LLM: there was no API key during development."},
-    {"ru": "Настоящий аккаунт amoCRM: загрузка виджета, вебхуки, токены.", "en": "A real amoCRM account: widget upload, webhooks, tokens."},
-    {"ru": "Названия событий вебхуков в интерфейсе amoCRM.", "en": "Webhook event names in the amoCRM interface."},
-    {"ru": "CI: в проекте его пока нет.", "en": "CI: the project has none yet."},
-    {"ru": "Linux и Windows на хосте (образ Docker — Linux).", "en": "Linux and Windows hosts (the Docker image is Linux)."}
-  ]
+    {
+      "ru": "Качество ответов настоящей LLM: во время разработки не было ключа API.",
+      "en": "Answer quality of a real LLM: there was no API key during development."
+    },
+    {
+      "ru": "Настоящий аккаунт amoCRM: загрузка виджета, вебхуки, токены.",
+      "en": "A real amoCRM account: widget upload, webhooks, tokens."
+    },
+    {
+      "ru": "Названия событий вебхуков в интерфейсе amoCRM.",
+      "en": "Webhook event names in the amoCRM interface."
+    },
+    {
+      "ru": "CI: в проекте его пока нет.",
+      "en": "CI: the project has none yet."
+    },
+    {
+      "ru": "Linux и Windows на хосте (образ Docker — Linux).",
+      "en": "Linux and Windows hosts (the Docker image is Linux)."
+    }
+  ],
+  "historical_checked_at": "2026-10-20",
+  "current_base_commit": "0b4b7bf",
+  "current_run": [
+    {
+      "name": {
+        "ru": "Тесты сервиса",
+        "en": "Service tests"
+      },
+      "command": ".venv/bin/python -m pytest",
+      "result": {
+        "ru": "95 passed; без сети и ключей",
+        "en": "95 passed; no network or keys"
+      },
+      "status": "pass"
+    },
+    {
+      "name": {
+        "ru": "Изоляция примеров",
+        "en": "Example isolation"
+      },
+      "command": "environment override smoke check",
+      "result": {
+        "ru": "демо-база, 5 маршрутов, маскирование, без app.main",
+        "en": "demo KB, 5 routes, PII masking, no app.main"
+      },
+      "status": "pass"
+    },
+    {
+      "name": {
+        "ru": "Ссылки документации",
+        "en": "Documentation links"
+      },
+      "command": ".venv/bin/python scripts/check_docs.py",
+      "result": {
+        "ru": "22 Markdown-файла; 165 локальных ссылок, 0 ошибок",
+        "en": "22 Markdown files; 165 local links, 0 broken"
+      },
+      "status": "pass"
+    },
+    {
+      "name": {
+        "ru": "PDF RU и EN",
+        "en": "RU and EN PDFs"
+      },
+      "command": ".venv/bin/python scripts/build_guide.py + pdfinfo + pdftoppm",
+      "result": {
+        "ru": "по 29 страниц; по 27 закладок и ссылок; все страницы просмотрены",
+        "en": "29 pages each; 27 bookmarks and links each; all pages reviewed"
+      },
+      "status": "pass"
+    }
+  ],
+  "guide": {
+    "pages": {
+      "ru": 29,
+      "en": 29
+    },
+    "sections": 27,
+    "bookmarks_per_language": 27,
+    "contents_links_per_language": 27,
+    "visual_review": "pass",
+    "text_bounds": "pass"
+  }
 }

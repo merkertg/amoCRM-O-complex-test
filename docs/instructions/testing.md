@@ -93,3 +93,14 @@ The script fails if a required file or a locale from `manifest.json` is missing.
 ## PDF guide
 
 See [docs/guide/README.md](../guide/README.md): build both languages, render every page and check them visually.
+
+```bash
+.venv/bin/python -m pip install -r requirements-guide.txt
+.venv/bin/python scripts/build_guide.py
+.venv/bin/python scripts/check_docs.py
+```
+
+The link checker verifies local Markdown targets and heading anchors without
+network access. The guide builder collects tests to check the recorded count;
+it does not run pytest or repeat the recorded browser/Docker checks. Guide
+examples use repository defaults, ignoring `.env` and environment overrides.

@@ -101,11 +101,11 @@ def add_stages_core(story, facts):
         callout(
             tr(
                 "<b>DialogContext — единый вход бизнес-логики.</b> Интерфейс присылает текст, виджет "
-                "amoCRM — только ID сделки. Оба источника приводятся к одной модели "
+                "amoCRM — ID сделки и при необходимости вставленный текст. Оба источника приводятся к одной модели "
                 "(сообщение, история, имя, источник), поэтому app/core не знает ни про HTTP, ни про "
                 "amoCRM и тестируется без сервера: вместо LLM подставляется FakeLLM.",
                 "<b>DialogContext is the single input of the business logic.</b> The UI sends text, "
-                "the amoCRM widget only a lead id. Both are normalised to one model (message, "
+                "the amoCRM widget a lead id and optional pasted text. Both are normalised to one model (message, "
                 "history, name, source), so app/core knows nothing about HTTP or amoCRM and is "
                 "tested without a server: FakeLLM replaces the LLM.",
             )
@@ -202,9 +202,9 @@ def add_stages_core(story, facts):
         callout(
             tr(
                 f"<b>Цена неизвестна — не ноль.</b> У позиции «{escape(name)}» amount = null, а в note: "
-                f"«{escape(note)}». Модель увидит пояснение и не сможет выдумать число.",
+                f"«{escape(note)}». Пояснение требует уточнить цену; проверки сумм и просмотр менеджером всё равно нужны.",
                 f"<b>Unknown price is not zero.</b> «{escape(name)}» has amount = null and a note "
-                "(in Russian, from the data file). The model sees the note and cannot invent a number.",
+                "(in Russian, from the data file). The note asks for price clarification; amount checks and manager review are still necessary.",
             ),
             AMBER,
             AMBER_L,
@@ -325,8 +325,9 @@ def add_stages_core(story, facts):
             "IDF(token) = ln(1 + N / df)          N = "
             + str(facts["documents"])
             + tr(" документов, df — где встречается токен", " documents, df — where the token occurs")
-            + "\nscore     = Σ "
+            + "\nscore     = sum("
             + tr("вес лучшего поля × IDF × вес запроса", "best field weight × IDF × query weight")
+            + ")"
         ),
         Spacer(1, 6),
         simple_table(

@@ -36,6 +36,7 @@ amoCRM/
 ├── scripts/
 │   ├── build_widget.py            # dist/widget.zip for amoCRM
 │   ├── build_guide.py             # PDF guide in Russian and English
+│   ├── check_docs.py              # offline local Markdown links and anchors
 │   └── guide/                     # PDF guide modules
 ├── tests/                         # pytest, FakeLLM and MockTransport
 ├── docs/
@@ -48,6 +49,7 @@ amoCRM/
 ├── Dockerfile, docker-compose.yml # container image and local stack
 ├── requirements.txt               # runtime dependencies, pinned
 ├── requirements-dev.txt           # + pytest
+├── requirements-guide.txt         # + ReportLab for PDF authoring
 ├── pyproject.toml                 # project metadata and pytest settings
 ├── .env.example                   # all settings with comments
 └── AGENTS.md                      # rules for further work

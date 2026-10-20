@@ -98,8 +98,11 @@ def test_counts() -> dict[str, int]:
 
 
 def project_facts() -> dict:
-    """Живые данные из приложения: база знаний, эндпоинты, ошибки, примеры."""
+    """Read reproducible repository facts without local settings or credentials."""
     _import_project()
+    from fastapi import FastAPI
+
+    from app.api import amocrm, routes
     from app.config import Settings
     from app.core import guards
     from app.core.assistant import EmptyMessageError, LLMOutputError, parse_suggestion
@@ -111,13 +114,19 @@ def project_facts() -> dict:
     from app.knowledge.repository import KnowledgeBaseError, KnowledgeBaseRepository
     from app.knowledge.search import KnowledgeIndex, stem, tokenize
     from app.llm import client as llm
-    from app.main import create_app
     from app.schemas import Suggestion
 
-    settings = Settings(_env_file=None)
+    # Explicit constructor values win over environment variables as well as .env.
+    settings = Settings(_env_file=None, **{
+        name: field.default for name, field in Settings.model_fields.items()
+    })
     kb = KnowledgeBaseRepository(settings.knowledge_base_path).get()
     index = KnowledgeIndex(kb)
-    app = create_app(settings)
+    # Importing app.main creates its global service from .env. Schema-only
+    # assembly uses the same routers without credentials, clients or startup.
+    app = FastAPI()
+    app.include_router(routes.router)
+    app.include_router(amocrm.router)
 
     errors = [
         llm.LLMTimeoutError,
@@ -207,7 +216,7 @@ def widget_manifest() -> dict:
 
 
 def knowledge_snippet() -> str:
-    """Первая позиция базы знаний с укороченными списками — пример формата."""
+    """Show one real item with short lists and compact values that fit a page."""
     data = json.loads(read_source("data/knowledge_base.json"))
     product = dict(data["products"][0])
     for key in ("features", "terms", "related", "upsell_scenarios", "keywords"):
@@ -215,7 +224,9 @@ def knowledge_snippet() -> str:
             product[key] = product[key][:2] + ["…"]
     product["upsell_scenarios"] = [s[:60] + "…" if len(s) > 60 else s for s in product["upsell_scenarios"]]
     product["description"] = product["description"][:70] + "…"
-    return json.dumps(product, ensure_ascii=False, indent=2)
+    rows = [f"  {json.dumps(key)}: {json.dumps(value, ensure_ascii=False)}"
+            for key, value in product.items()]
+    return "{\n" + ",\n".join(rows) + "\n}"
 
 
 def unfixed_price() -> tuple[str, str]:
@@ -226,7 +237,7 @@ def unfixed_price() -> tuple[str, str]:
 
 
 def prompt_example() -> str:
-    """Конец настоящего user-промпта: данные клиента в блоках, телефон замаскирован."""
+    """Build a synthetic prompt using defaults, never local environment values."""
     _import_project()
     import asyncio
 
@@ -245,7 +256,9 @@ def prompt_example() -> str:
             self.messages = messages
             return json.dumps({"customer_reply": "ok", "upsell_applicable": False})
 
-    settings = Settings(_env_file=None)
+    settings = Settings(_env_file=None, **{
+        name: field.default for name, field in Settings.model_fields.items()
+    })
     capture = Capture()
     assistant = SalesAssistant(KnowledgeBaseRepository(settings.knowledge_base_path), capture, settings)
     context = DialogContext(

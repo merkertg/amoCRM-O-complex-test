@@ -435,7 +435,7 @@ def jwt_checks(c, w, h):
 
 
 def adapter_flow(c, w, h):
-    """Как адаптер выбирает текущее сообщение и историю."""
+    """Draw three separated outcomes for the current message and history."""
     bh = 44
     node(c, 0, h - bh, 150, bh, tr("Текст в поле виджета?", "Text in widget field?"), "", BLUE_L, BLUE, 9.4)
     node(c, 200, h - bh, w - 200, bh, tr("да → это сообщение (manual)", "yes → this is the message (manual)"), tr("такой же последний в кэше — убрать из истории", "same as last cached — drop from history"), GREEN_L, GREEN, 9, 7.4)

@@ -4,7 +4,7 @@ A Python MVP of an AI assistant for sales managers who chat with customers in am
 
 **All six stages of the specification are implemented.** A FastAPI service with a REST API and Swagger docs, a JSON knowledge base that reloads on edit, keyword retrieval with light Russian stemming, an OpenAI-compatible LLM client on HTTPX with retries, a strict structured JSON answer validated by Pydantic with one repair attempt, and server-side guards. The guards keep upsells inside the knowledge base, strip internal hints from the customer reply, flag amounts that are not in the facts, detect prompt injection and mask phone numbers, e-mails and card numbers before the LLM. The manager UI is plain HTML/CSS/JS. The amoCRM integration has three parts: a widget for the lead card, which calls the backend with an amoCRM one-time JWT; a webhook receiver for chat messages; and a REST API v4 client for lead and contact data. 95 pytest tests run without network or keys. A Docker image runs as a non-root user.
 
-**Начни с [быстрого запуска](docs/instructions/quickstart.md)** или с подробных руководств этапов [01–06](docs/STAGE_01.md). Наглядный PDF: [на русском](docs/guide/amocrm-sales-assistant-guide.pdf) и [in English](docs/guide/amocrm-sales-assistant-guide-en.pdf). После запуска интерфейс менеджера: <http://127.0.0.1:8000>, документация API: <http://127.0.0.1:8000/docs>.
+**Start with the [quickstart](docs/instructions/quickstart.md)** or the detailed Russian walkthroughs for [stages 01–06](docs/STAGE_01.md). Illustrated PDF guides: [Russian](docs/guide/amocrm-sales-assistant-guide.pdf) and [English](docs/guide/amocrm-sales-assistant-guide-en.pdf); [rebuild and verification](docs/guide/README.md). After starting the server, open the manager UI at <http://127.0.0.1:8000> or the API documentation at <http://127.0.0.1:8000/docs>.
 
 ## Roadmap
 
@@ -31,14 +31,14 @@ Instructions ([docs/instructions/](docs/instructions/)):
 
 Stage learning guides in Russian:
 
-- [Этап 01: архитектура и структура проекта](docs/STAGE_01.md)
-- [Этап 02: база знаний и поиск](docs/STAGE_02.md)
-- [Этап 03: LLM и два блока ответа](docs/STAGE_03.md)
-- [Этап 04: FastAPI и интерфейс менеджера](docs/STAGE_04.md)
-- [Этап 05: тесты и Docker](docs/STAGE_05.md)
-- [Этап 06: интеграция с amoCRM](docs/STAGE_06.md)
-- [Наглядное руководство PDF](docs/guide/amocrm-sales-assistant-guide.pdf), [English PDF guide](docs/guide/amocrm-sales-assistant-guide-en.pdf) и [их пересборка](docs/guide/README.md)
-- [Проверка проекта](docs/VERIFICATION.md)
+- [Stage 01: architecture and project structure](docs/STAGE_01.md)
+- [Stage 02: knowledge base and retrieval](docs/STAGE_02.md)
+- [Stage 03: LLM and two answer blocks](docs/STAGE_03.md)
+- [Stage 04: FastAPI and manager UI](docs/STAGE_04.md)
+- [Stage 05: tests and Docker](docs/STAGE_05.md)
+- [Stage 06: amoCRM integration](docs/STAGE_06.md)
+- [Russian PDF guide](docs/guide/amocrm-sales-assistant-guide.pdf), [English PDF guide](docs/guide/amocrm-sales-assistant-guide-en.pdf) and [rebuild instructions](docs/guide/README.md)
+- [Project verification](docs/VERIFICATION.md)
 
 Design and history:
 

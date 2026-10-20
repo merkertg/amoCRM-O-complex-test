@@ -1,6 +1,7 @@
 """Вёрстка PDF-гайда: шрифты, цвета, стили текста и общие блоки страниц."""
 
 import re
+import textwrap
 from html import escape
 from pathlib import Path
 
@@ -276,7 +277,7 @@ class SectionTitle(Flowable):
     """Номер раздела, заголовок и подзаголовок."""
 
     def __init__(self, number, title, subtitle, color=BLUE):
-        """Запомнить текст и заранее перенести подзаголовок по ширине."""
+        """Wrap headings and subtitles before reserving page space."""
         super().__init__()
         self.number, self.title, self.subtitle, self.color = (
             number,
@@ -285,14 +286,15 @@ class SectionTitle(Flowable):
             color,
         )
         self.sub_lines = simpleSplit(subtitle, "PT", 10.5, W - 46)
-        self.height = 36 + len(self.sub_lines) * 14
+        self.title_lines = simpleSplit(title, "PT-Bold", 21, W - 46)
+        self.height = 36 + (len(self.title_lines) - 1) * 25 + len(self.sub_lines) * 14
 
     def wrap(self, *_):
         """Вернуть занимаемые размеры блока для расчёта страницы."""
         return W, self.height
 
     def draw(self):
-        """Нарисовать номер в цветном квадрате, заголовок и подзаголовок."""
+        """Draw the numbered heading without clipping long translated titles."""
         c = self.canv
         top = self.height
         rbox(c, 0, top - 30, 34, 30, self.color, None, r=7)
@@ -301,9 +303,10 @@ class SectionTitle(Flowable):
         c.drawCentredString(17, top - 21, self.number)
         c.setFillColor(INK)
         c.setFont("PT-Bold", 21)
-        c.drawString(46, top - 22, self.title)
+        for index, line in enumerate(self.title_lines):
+            c.drawString(46, top - 22 - index * 25, line)
         c.setFillColor(MUTED)
-        y = top - 40
+        y = top - 40 - (len(self.title_lines) - 1) * 25
         for line in self.sub_lines:
             draw_text(c, 46, y, line, "PT", 10.5)
             y -= 14
@@ -328,8 +331,15 @@ def callout(text, color=BLUE, fill=BLUE_L, style=BODY_S):
 
 
 def code_block(text, width=W):
-    """Блок кода или команд моноширинным шрифтом на светлом фоне."""
-    table = Table([[Preformatted(text.rstrip("\n"), CODE)]], colWidths=[width])
+    """Wrap displayed excerpts to the available width; allow long blocks to split."""
+    columns = int((width - 18) / pdfmetrics.stringWidth("M", CODE.fontName, CODE.fontSize))
+    wrapped = []
+    for line in text.rstrip("\n").expandtabs(4).splitlines():
+        wrapped.extend(textwrap.wrap(
+            line, width=columns, subsequent_indent="    ",
+            replace_whitespace=False, drop_whitespace=False, break_on_hyphens=False,
+        ) or [""])
+    table = Table([[Preformatted("\n".join(wrapped), CODE)]], colWidths=[width], splitInRow=1)
     table.setStyle(
         TableStyle(
             [

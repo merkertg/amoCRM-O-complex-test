@@ -374,7 +374,7 @@ def add_stages_delivery(story, facts, test_counts):
         Diagram(76, jwt_checks),
         Spacer(1, 8),
         code_block(
-            source_slice("app/integrations/amocrm/auth.py", "payload = jwt.decode(", "leeway=leeway_seconds")
+            source_slice("app/integrations/amocrm/auth.py", "payload = jwt.decode(", "        )")
             + "\n    …\n"
             + source_slice("app/integrations/amocrm/auth.py", "if client_id and", "raise WidgetAuthError()")
             + "\n"
@@ -426,7 +426,7 @@ def add_stages_delivery(story, facts, test_counts):
             [CELL_M, CELL],
         ),
         p(tr("Как адаптер выбирает сообщение", "How the adapter picks the message"), H2),
-        Diagram(126, adapter_flow),
+        Diagram(164, adapter_flow),
         Spacer(1, 8),
         KeepTogether(
             [
@@ -437,9 +437,9 @@ def add_stages_delivery(story, facts, test_counts):
         Spacer(1, 4),
         p(
             tr(
-                "Из контакта берётся только имя — телефоны и e-mail не запрашиваются. Если REST API "
+                "REST API возвращает контакт целиком; адаптер использует только имя, остальные поля в LLM не передаются. Если REST API "
                 "недоступен, подсказка строится по переписке с предупреждением менеджеру.",
-                "Only the contact's first name is read — phones and e-mails are not requested. If "
+                "REST API returns the full contact; the adapter uses only the first name and does not pass other fields to the LLM. If "
                 "REST API is down, the hint is built from the conversation with a warning.",
             ),
             SMALL,

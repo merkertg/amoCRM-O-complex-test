@@ -1,11 +1,8 @@
-"""Адаптер amoCRM: собирает DialogContext для бизнес-логики по ID сделки.
+"""Build business-logic DialogContext from an amoCRM lead.
 
-Источники данных:
-- текущее сообщение: из поля виджета (если менеджер вставил текст) или
-  последняя реплика клиента из кэша вебхуков;
-- история диалога: из кэша вебхуков (входящие + исходящие сообщения);
-- клиент: имя основного контакта сделки через REST API v4.
-Телефоны, e-mail и прочие поля контакта не запрашиваются и не передаются в LLM.
+The current message and history come from optional widget input or the
+webhook cache. REST API v4 returns the full primary contact, but only its
+first name is used. Other contact fields are not passed to the LLM.
 """
 
 import logging
