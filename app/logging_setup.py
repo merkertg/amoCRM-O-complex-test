@@ -16,7 +16,7 @@ _REDACTIONS = [
     (re.compile(r"(?i)((?:token|secret|api[_-]?key|password)[\"']?\s*[:=]\s*[\"']?)[^\s\"'&,]+"), r"\1***"),
     (re.compile(r"\bsk-[\w\-]{8,}"), "sk-***"),
     (re.compile(r"\beyJ[\w\-]+\.[\w\-]+\.[\w\-]+"), "<jwt>"),
-    (re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+"), "<email>"),
+    (re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"), "<email>"),
     (re.compile(r"(?<!\d)(?:\+7|8)[\s\-(]*\d{3}[\s\-)]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}(?!\d)"), "<phone>"),
 ]
 

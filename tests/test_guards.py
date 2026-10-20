@@ -69,6 +69,10 @@ def test_redact_pii_masks_contacts_but_keeps_prices():
     assert "42 900 ₽" in redacted
 
 
+def test_redact_pii_keeps_sentence_punctuation():
+    assert redact_pii("Пишите на anna@mail.ru. Спасибо!") == "Пишите на [email]. Спасибо!"
+
+
 def test_internal_leaks_are_removed_from_customer_reply():
     suggestion = Suggestion.model_validate(
         llm_reply(

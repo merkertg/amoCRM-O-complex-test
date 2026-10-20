@@ -196,6 +196,7 @@ def test_widget_manual_message_has_priority(client, llm):
         widget_token(iss="https://evil.amocrm.ru"),
         jwt.encode({"account_id": 1, "user_id": 1, "iat": 1, "exp": int(time.time()) + 60}, "wrong-secret-0123456789abcdefghijk", algorithm="HS256"),
     ],
+    ids=["missing", "not-jwt", "expired", "other-integration", "other-account", "wrong-signature"],
 )
 def test_widget_rejects_invalid_tokens(client, token):
     headers = {"X-Auth-Token": token} if token else {}
