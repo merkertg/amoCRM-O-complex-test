@@ -1,0 +1,11 @@
+services:
+  assistant:
+    build: .
+    image: amocrm-sales-assistant:latest
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      # База знаний редактируется без пересборки образа: изменения подхватываются автоматически.
+      - ./data:/app/data:ro
+    restart: unless-stopped

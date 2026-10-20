@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-ассистент менеджера</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__title">
+      <span class="logo" aria-hidden="true">AI</span>
+      <div>
+        <h1>Ассистент менеджера по продажам</h1>
+        <p class="muted">Готовит ответ клиенту и подсказку по допродаже. Отправляете вы — после проверки.</p>
+      </div>
+    </div>
+    <a class="link" href="/docs" target="_blank" rel="noopener">API</a>
+  </header>
+
+  <main class="layout">
+    <section class="panel" aria-labelledby="input-title">
+      <h2 id="input-title">Переписка</h2>
+      <form id="suggest-form" novalidate>
+        <label class="field">
+          <span class="field__label">Сообщение клиента <span class="req">*</span></span>
+          <textarea id="message" rows="5" maxlength="4000" required
+            placeholder="Например: Здравствуйте! Сколько стоит кондиционер в спальню 18 м² с установкой?"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="field__label">История переписки <span class="muted">— необязательно</span></span>
+          <textarea id="history" rows="8" maxlength="12000"
+            placeholder="Клиент: Добрый день, подбираю кондиционер&#10;Менеджер: Здравствуйте! Для какой комнаты?"></textarea>
+          <span class="hint">Каждая реплика с новой строки: «Клиент: …» или «Менеджер: …».</span>
+        </label>
+
+        <label class="field field--inline">
+          <span class="field__label">Имя клиента <span class="muted">— необязательно</span></span>
+          <input id="client-name" type="text" maxlength="100" autocomplete="off" placeholder="Анна">
+        </label>
+
+        <div class="actions">
+          <button id="submit" class="btn btn--primary" type="submit">Сгенерировать рекомендации</button>
+          <button id="clear" class="btn btn--ghost" type="button">Очистить</button>
+        </div>
+        <p class="hint">Ctrl + Enter — сгенерировать.</p>
+
+        <div class="examples">
+          <span class="field__label">Примеры для проверки:</span>
+          <div class="examples__list">
+            <button type="button" class="chip" data-example="purchase">Покупка кондиционера</button>
+            <button type="button" class="chip" data-example="unclear">Мало информации</button>
+            <button type="button" class="chip" data-example="complaint">Жалоба</button>
+            <button type="button" class="chip" data-example="injection">Prompt injection</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel results" aria-live="polite" aria-labelledby="result-title">
+      <h2 id="result-title" class="visually-hidden">Результат</h2>
+
+      <div id="error" class="alert alert--error" hidden></div>
+
+      <div id="empty" class="empty">
+        <p>Вставьте сообщение клиента и нажмите «Сгенерировать рекомендации».</p>
+        <p class="muted">Здесь появятся готовый ответ клиенту и подсказка по допродаже.</p>
+      </div>
+
+      <div id="loading" class="loading" hidden>
+        <span class="spinner" aria-hidden="true"></span> Анализирую переписку и базу знаний…
+      </div>
+
+      <div id="result" hidden>
+        <div id="warnings" class="alert alert--warn" hidden>
+          <strong>Проверьте перед отправкой</strong>
+          <ul id="warnings-list"></ul>
+        </div>
+
+        <article class="card card--client">
+          <header class="card__head">
+            <h3>Ответ клиенту</h3>
+            <span id="clarify-badge" class="badge badge--info" hidden>Уточняющий вопрос</span>
+          </header>
+          <textarea id="reply" class="reply" rows="7" aria-label="Ответ клиенту"></textarea>
+          <div class="card__foot">
+            <span class="muted">Можно отредактировать. Ассистент ничего не отправляет сам.</span>
+            <button type="button" class="btn btn--primary btn--small" data-copy="reply">Копировать</button>
+          </div>
+        </article>
+
+        <article class="card card--manager">
+          <header class="card__head">
+            <h3>Подсказка менеджеру</h3>
+            <span class="badge badge--internal">Только для вас — не отправлять клиенту</span>
+          </header>
+          <div id="upsell-status" class="status"></div>
+          <dl class="details">
+            <div id="upsell-product-row">
+              <dt>Предложить</dt>
+              <dd id="upsell-product"></dd>
+            </div>
+            <div>
+              <dt id="upsell-reason-label">Почему</dt>
+              <dd id="upsell-reason"></dd>
+            </div>
+          </dl>
+          <div id="phrase-block" class="phrase">
+            <div class="phrase__head">
+              <span class="field__label">Пример фразы для клиента</span>
+              <button type="button" class="btn btn--ghost btn--small" data-copy="phrase">Копировать</button>
+            </div>
+            <p id="phrase"></p>
+          </div>
+        </article>
+
+        <details class="meta">
+          <summary>Источники и технические детали</summary>
+          <p><strong>Факты из базы знаний:</strong> <span id="sources"></span></p>
+          <p class="muted" id="tech"></p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

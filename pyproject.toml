@@ -1,0 +1,14 @@
+[project]
+name = "amocrm-sales-assistant"
+version = "1.0.0"
+description = "AI-ассистент менеджера по продажам для amoCRM"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+filterwarnings = [
+    "error::DeprecationWarning:app.*",
+    "ignore:Using `httpx` with `starlette.testclient`",
+]

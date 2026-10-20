@@ -1,0 +1,11 @@
+{
+  "widget": {
+    "name": "AI Sales Assistant",
+    "short_description": "Reply draft and upsell hint for the manager",
+    "description": "Analyses the lead conversation and the company knowledge base. Prepares a reply draft for the client and an internal upsell hint. Nothing is sent to the client automatically: the manager reviews and sends the reply.",
+    "tour_description": "AI assistant for sales managers"
+  },
+  "settings": {
+    "backend_url": "Assistant server URL (https://…)"
+  }
+}
