@@ -14,7 +14,7 @@ pytest
 Expected output:
 
 ```text
-95 passed in 0.3s
+124 passed in 0.3s
 ```
 
 Tests need no network and no keys: the LLM is replaced by `FakeLLM` (`tests/conftest.py`), the LLM provider and amoCRM HTTP calls by `httpx.MockTransport`.
@@ -27,6 +27,8 @@ Tests need no network and no keys: the LLM is replaced by `FakeLLM` (`tests/conf
 | `tests/test_llm_client.py` | 13 | Payload, retries on 429/5xx/timeouts, no retry on 401/400, malformed provider answers, no secrets in logs |
 | `tests/test_api.py` | 10 | REST API, error codes, no input echo, no personal data in logs, UI and docs served |
 | `tests/test_amocrm.py` | 16 | Webhook parsing and deduplication, widget JWT checks, context from webhooks, amoCRM API failures |
+| `tests/test_access.py` | 19 | Manager login on protected paths, public `/health`, amoCRM endpoints untouched, malformed headers, rate limiter window, 429 with `Retry-After`, per-user widget limit |
+| `tests/test_evals.py` | 10 | Both evaluation suites load, the retrieval suite meets its thresholds, dialogue checks catch every mismatch, CLI exit codes |
 
 Run one file or one test:
 
@@ -110,16 +112,18 @@ examples use repository defaults, ignoring `.env` and environment overrides.
 The same local checks run in [GitHub Actions](../../.github/workflows/ci.yml):
 
 ```bash
-.venv/bin/python -m ruff check app tests scripts
-.venv/bin/python -m mypy app
+.venv/bin/python -m ruff check app tests scripts evals
+.venv/bin/python -m mypy app evals
 .venv/bin/python -m pytest
+.venv/bin/python scripts/run_evals.py retrieval
 .venv/bin/python scripts/check_docs.py
 .venv/bin/python scripts/build_widget.py
 ```
 
 Install `requirements-dev.txt` first. Ruff checks code errors and import
-ordering across the application, tests and scripts. Mypy requires typed
-function signatures and checks bodies across all application modules;
-tests and PDF scripts are outside its initial scope.
+ordering across the application, tests, scripts and evaluations. Mypy requires
+typed function signatures and checks bodies across the application and the
+evaluation runner; tests and PDF scripts are outside its scope. The retrieval
+evaluation is described in [Quality evaluations](evaluations.md).
 See [CI instructions](ci.md) and the Russian [Stage 07 guide](../STAGE_07.md).
 Remote Actions results are recorded separately from local checks.

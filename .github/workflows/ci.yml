@@ -33,11 +33,13 @@ jobs:
       - name: Install development dependencies
         run: python -m pip install -r requirements-dev.txt
       - name: Lint Python
-        run: python -m ruff check app tests scripts
+        run: python -m ruff check app tests scripts evals
       - name: Check application types
-        run: python -m mypy app
+        run: python -m mypy app evals
       - name: Run offline tests
         run: python -m pytest
+      - name: Evaluate retrieval quality
+        run: python scripts/run_evals.py retrieval
       - name: Check local documentation links
         run: python scripts/check_docs.py
       - name: Build amoCRM widget

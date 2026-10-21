@@ -12,7 +12,9 @@ router = APIRouter()
 
 # Match FastAPI's response metadata contract, including named status codes.
 ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
+    401: {"model": ErrorResponse, "description": "Нужен логин и пароль менеджера (если включён UI_BASIC_AUTH)"},
     422: {"model": ErrorResponse, "description": "Некорректный запрос"},
+    429: {"model": ErrorResponse, "description": "Превышен лимит генераций в минуту"},
     502: {"model": ErrorResponse, "description": "Модель вернула некорректный ответ"},
     503: {"model": ErrorResponse, "description": "LLM или база знаний недоступны"},
     504: {"model": ErrorResponse, "description": "Таймаут LLM"},
@@ -35,6 +37,8 @@ async def suggest(body: SuggestRequest, request: Request) -> SuggestResponse:
     Историю можно передать списком `history` или текстом `history_text`
     (строки «Клиент: …» / «Менеджер: …»). Если переданы оба — используется `history`.
     """
+    client_host = request.client.host if request.client else "unknown"
+    request.app.state.rate_limiter.check(f"ip:{client_host}", scope="ip")
     assistant: SalesAssistant = request.app.state.assistant
     history = body.history or (parse_history_text(body.history_text) if body.history_text else [])
     context = DialogContext(

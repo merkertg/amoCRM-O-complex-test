@@ -59,6 +59,8 @@ TEST_PURPOSE = {
     "tests/test_llm_client.py": ("повторы, таймауты, 401/400, битые ответы, логи", "retries, timeouts, 401/400, broken answers, logs"),
     "tests/test_api.py": ("коды ошибок, нет эха ввода, нет ПДн в логах, UI", "error codes, no input echo, no PII in logs, UI"),
     "tests/test_amocrm.py": ("вебхуки, 6 видов плохих JWT, контекст, сбои API", "webhooks, 6 bad JWT kinds, context, API failures"),
+    "tests/test_access.py": ("этап 08: вход менеджера, публичные пути, лимит и 429", "Stage 08: manager login, public paths, limit and 429"),
+    "tests/test_evals.py": ("этап 08: наборы оценок, пороги поиска, проверки диалогов", "Stage 08: evaluation suites, retrieval thresholds, dialogue checks"),
 }
 
 

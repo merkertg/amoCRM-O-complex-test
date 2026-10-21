@@ -7,6 +7,11 @@
 
 Короткая английская инструкция — [Testing and verification](instructions/testing.md).
 
+> Цифры ниже — состояние на конец этапа 05 (95 тестов в шести файлах). На
+> [этапе 08](STAGE_08.md) добавлены `tests/test_access.py` и
+> `tests/test_evals.py`: сейчас тестов 124. Актуальная таблица — в
+> [Testing and verification](instructions/testing.md).
+
 Быстрые переходы: [запуск](#3-запуск-тестов) · [FakeLLM](#4-fakellm-модель-без-модели) ·
 [MockTransport](#5-mocktransport-http-без-сети) · [фикстуры](#6-фикстуры-и-фабрика-приложения) ·
 [требования → тесты](#7-какой-тест-отвечает-за-какое-требование) ·

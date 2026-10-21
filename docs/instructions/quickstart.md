@@ -106,4 +106,6 @@ Settings are read from environment variables, then from `.env`, then from defaul
 | `REDACT_PII_FOR_LLM` | `true` | Mask phones, e-mails and card numbers before the LLM |
 | `LOG_LEVEL` | `INFO` | Log level |
 | `CORS_ALLOW_ORIGINS` | empty | Comma-separated origins, e.g. `https://example.amocrm.ru` |
+| `UI_BASIC_AUTH_USERNAME`, `UI_BASIC_AUTH_PASSWORD` | not set | Manager login for the UI, `/api/v1/suggest` and `/docs`; set both on any non-local server — see [Access protection](access.md) |
+| `RATE_LIMIT_PER_MINUTE` | `30` | Generations per minute per client IP or amoCRM user; `0` — no limit |
 | `AMOCRM_*` | disabled | See [amoCRM integration](amocrm.md) |

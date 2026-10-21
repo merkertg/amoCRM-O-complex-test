@@ -1,0 +1,30 @@
+{
+  "description": "Вопросы клиентов и позиция базы знаний, которая должна найтись первой. must_include — что ещё обязано попасть в промпт (обычно кандидаты для допродажи).",
+  "thresholds": {"min_hit_at_1": 0.95, "min_recall": 1.0},
+  "cases": [
+    {"id": "install-price", "query": "Сколько стоит монтаж?", "expected_first": "install-standard"},
+    {"id": "bedroom-18", "query": "Кондиционер в спальню 18 м²", "expected_first": "breeze-09", "must_include": ["install-standard"]},
+    {"id": "kids-room", "query": "Нужен кондиционер в детскую", "expected_first": "breeze-09"},
+    {"id": "breeze-09-installed", "query": "Сколько стоит Бриз 09 с установкой?", "expected_first": "breeze-09", "must_include": ["install-standard", "wifi-module"]},
+    {"id": "living-room", "query": "Подберите кондиционер для гостиной", "expected_first": "breeze-12"},
+    {"id": "breeze-18-price", "query": "Сколько стоит Бриз 18?", "expected_first": "breeze-18"},
+    {"id": "office", "query": "Нужен мощный кондиционер в офис", "expected_first": "breeze-18"},
+    {"id": "context-breeze-12", "query": "А сколько стоит?", "context": "Присматриваюсь к Бриз 12", "expected_first": "breeze-12"},
+    {"id": "long-pipe", "query": "Наружный блок далеко, трасса получится длиннее", "expected_first": "extra-pipe-meter"},
+    {"id": "old-unit", "query": "Сколько стоит снять старый кондиционер?", "expected_first": "dismantling"},
+    {"id": "smartphone", "query": "Хочу управлять кондиционером со смартфона", "expected_first": "wifi-module"},
+    {"id": "cleaning-smell", "query": "Хочу почистить кондиционер, появился запах", "expected_first": "service-cleaning"},
+    {"id": "freon", "query": "Нужна заправка фреоном", "expected_first": "service-cleaning"},
+    {"id": "service-plan", "query": "Есть абонемент на регулярное обслуживание?", "expected_first": "service-plan"},
+    {"id": "extend-warranty", "query": "Можно продлить гарантию до 5 лет?", "expected_first": "extended-warranty"},
+    {"id": "delivery-region", "query": "Сколько стоит доставка в Подмосковье?", "expected_first": "faq-delivery"},
+    {"id": "installment", "query": "Можно оплатить в рассрочку?", "expected_first": "faq-payment"},
+    {"id": "legal-entity", "query": "Можно оплатить по безналу для юрлица?", "expected_first": "faq-payment"},
+    {"id": "warranty", "query": "Какой гарантийный срок?", "expected_first": "faq-warranty"},
+    {"id": "service-area", "query": "Вы работаете в Туле?", "expected_first": "faq-service-area"},
+    {"id": "weekends", "query": "Работаете в выходные?", "expected_first": "faq-schedule"},
+    {"id": "leak", "query": "Кондиционер течёт, капает вода", "expected_first": "faq-repair"},
+    {"id": "noise", "query": "Кондиционер шумит и не холодит", "expected_first": "faq-repair"},
+    {"id": "return", "query": "Хочу вернуть кондиционер", "expected_first": "faq-returns"}
+  ]
+}

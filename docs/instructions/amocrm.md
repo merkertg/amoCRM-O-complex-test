@@ -95,6 +95,7 @@ Open that lead in amoCRM, leave the widget field empty and press «Сгенер�
 
 ## Limits
 
+- Generations from the widget are limited per amoCRM user (`RATE_LIMIT_PER_MINUTE`); over the limit the widget shows «Слишком много запросов…». The manager login (`UI_BASIC_AUTH_*`) does not apply to `/api/v1/amocrm/*`, which has its own JWT and webhook-secret checks — see [Access protection](access.md).
 - No widget location inside the chat window and no documented way to insert text into the chat input: the widget lives in the lead card and the manager copies the reply.
 - Chat history comes only from webhooks received after you subscribed; older messages can be pasted into the widget field.
 - The cache is in process memory: one process, lost on restart. Replace `MessageStore` with Redis for several replicas.

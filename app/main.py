@@ -17,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api import amocrm as amocrm_api
 from app.api import routes
+from app.api.access import BasicAuthMiddleware, RateLimiter
 from app.config import Settings, get_settings
 from app.core.assistant import SalesAssistant
 from app.errors import AppError
@@ -38,8 +39,12 @@ AI-ассистент менеджера по продажам: по сообщ�
 """
 
 
-def _error(status: int, code: str, message: str) -> JSONResponse:
-    return JSONResponse(status_code=status, content={"error": {"code": code, "message": message}})
+def _error(status: int, code: str, message: str, headers: dict[str, str] | None = None) -> JSONResponse:
+    return JSONResponse(
+        status_code=status,
+        content={"error": {"code": code, "message": message}},
+        headers=headers or None,
+    )
 
 
 def build_llm_client(settings: Settings) -> OpenAICompatibleClient:
@@ -111,6 +116,17 @@ def create_app(
     app.state.assistant = SalesAssistant(kb_repo, llm, settings)
     app.state.message_store = message_store
     app.state.amocrm_adapter = adapter
+    app.state.rate_limiter = RateLimiter(settings.rate_limit_per_minute)
+
+    if settings.basic_auth_enabled:
+        assert settings.ui_basic_auth_password is not None  # гарантирует basic_auth_enabled
+        app.add_middleware(
+            BasicAuthMiddleware,
+            username=settings.ui_basic_auth_username,
+            password=settings.ui_basic_auth_password.get_secret_value(),
+        )
+    else:
+        logger.warning("manager UI and /api/v1/suggest are not protected: set UI_BASIC_AUTH_* outside localhost")
 
     if settings.cors_origins:
         app.add_middleware(
@@ -122,7 +138,7 @@ def create_app(
 
     @app.exception_handler(AppError)
     async def app_error_handler(_: Request, exc: AppError) -> JSONResponse:
-        return _error(exc.status_code, exc.code, exc.user_message)
+        return _error(exc.status_code, exc.code, exc.user_message, exc.headers)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error_handler(_: Request, exc: RequestValidationError) -> JSONResponse:

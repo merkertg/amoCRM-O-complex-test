@@ -10,7 +10,9 @@ class AppError(Exception):
     code: str = "internal_error"
     user_message: str = "Внутренняя ошибка сервиса. Попробуйте ещё раз."
 
-    def __init__(self, user_message: str | None = None) -> None:
+    def __init__(self, user_message: str | None = None, headers: dict[str, str] | None = None) -> None:
         if user_message:
             self.user_message = user_message
+        # Дополнительные HTTP-заголовки ответа, например Retry-After для 429.
+        self.headers: dict[str, str] = dict(headers or {})
         super().__init__(self.user_message)

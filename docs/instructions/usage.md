@@ -78,9 +78,11 @@ Every error has the same body: `{"error": {"code": "...", "message": "..."}}`. T
 | 422 | `validation_error` | Empty or too long field; the body lists field names, never values |
 | 422 | `amocrm_no_message` | Widget call without text and no cached customer message |
 | 400 | `amocrm_webhook_invalid` | Webhook body is not valid form data or JSON |
+| 401 | `unauthorized` | Manager login is enabled and the request has no or wrong credentials — see [Access protection](access.md) |
 | 401 | `amocrm_widget_unauthorized` | Missing, expired or foreign widget token |
 | 403 | `amocrm_webhook_forbidden` | Wrong webhook secret |
 | 404 | `amocrm_lead_not_found` | Lead does not exist in amoCRM |
+| 429 | `rate_limited` | More than `RATE_LIMIT_PER_MINUTE` generations in a minute; wait for `Retry-After` seconds |
 | 502 | `llm_invalid_output` | The model returned invalid JSON twice |
 | 502 | `llm_bad_request`, `llm_bad_response` | The provider rejected the request or answered without content |
 | 503 | `llm_unavailable` | Provider down, rate limited (429) or 5xx after retries |

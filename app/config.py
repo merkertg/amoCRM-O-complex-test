@@ -7,7 +7,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -49,6 +49,15 @@ class Settings(BaseSettings):
     max_history_messages: int = 30
     redact_pii_for_llm: bool = True
 
+    # --- Доступ к интерфейсу и API менеджера ---
+    ui_basic_auth_username: str = Field(
+        default="", description="Логин HTTP Basic для интерфейса, /api/v1/suggest и /docs"
+    )
+    ui_basic_auth_password: SecretStr | None = None
+    rate_limit_per_minute: int = Field(
+        default=30, ge=0, description="Генераций в минуту на IP или пользователя amoCRM; 0 — без лимита"
+    )
+
     # --- amoCRM ---
     amocrm_enabled: bool = False
     amocrm_base_url: str = Field(default="", description="https://<subdomain>.amocrm.ru")
@@ -59,6 +68,17 @@ class Settings(BaseSettings):
     amocrm_timeout_seconds: float = 10.0
     amocrm_history_limit: int = 20
     amocrm_message_ttl_hours: int = 24
+
+    @model_validator(mode="after")
+    def _basic_auth_pair(self) -> "Settings":
+        """Login and password are set together, otherwise the UI would be half-protected."""
+        if bool(self.ui_basic_auth_username) != (self.ui_basic_auth_password is not None):
+            raise ValueError("UI_BASIC_AUTH_USERNAME и UI_BASIC_AUTH_PASSWORD задаются вместе")
+        return self
+
+    @property
+    def basic_auth_enabled(self) -> bool:
+        return bool(self.ui_basic_auth_username and self.ui_basic_auth_password)
 
     @property
     def cors_origins(self) -> list[str]:

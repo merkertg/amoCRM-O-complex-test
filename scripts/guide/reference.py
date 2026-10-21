@@ -2,6 +2,7 @@
 
 from html import escape
 
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import KeepTogether, Spacer
 
 from guide.i18n import loc, tr
@@ -10,7 +11,6 @@ from guide.layout import (
     AMBER_L,
     BODY_S,
     CELL,
-    CELL_B,
     CELL_M,
     GREEN,
     H2,
@@ -20,6 +20,7 @@ from guide.layout import (
     W,
     callout,
     code_block,
+    grid_table,
     p,
     simple_table,
 )
@@ -29,6 +30,23 @@ from guide.toc import section
 def _command(story: list, title: str, command: str) -> None:
     """Keep a command label attached to its readable code block."""
     story.append(KeepTogether([p(title, H2), code_block(command), Spacer(1, 5)]))
+
+
+# Compact cells keep the verification summary on one page as evidence grows.
+CELL_TIGHT = ParagraphStyle("celltight", parent=CELL, fontSize=8.3, leading=10.4)
+CELL_TIGHT_B = ParagraphStyle("celltightb", parent=CELL_TIGHT, fontName="PT-Bold")
+HEAD_TIGHT = ParagraphStyle("headtight", parent=CELL_TIGHT, fontName="PT-Bold", textColor="#FFFFFF")
+
+
+def _tight_table(headers: list[str], rows: list[list[str]], widths: list[float]):
+    """Two-column evidence table with smaller type and padding."""
+    prepared = [[p(value, HEAD_TIGHT) for value in headers]]
+    prepared += [[p(name, CELL_TIGHT_B), p(result, CELL_TIGHT)] for name, result in rows]
+    return grid_table(
+        prepared,
+        widths,
+        styles=[("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 3)],
+    )
 
 
 def _localized(value: str | dict[str, str]) -> str:
@@ -87,6 +105,12 @@ def add_reference(story: list, verification: dict) -> None:
     )
     _command(
         story,
+        tr("Оценки качества: поиск (офлайн) и диалоги (модель из .env)", "Quality evaluations: retrieval (offline) and dialogues (model from .env)"),
+        ".venv/bin/python scripts/run_evals.py retrieval\n"
+        ".venv/bin/python scripts/run_evals.py dialogues --case return-request",
+    )
+    _command(
+        story,
         tr("Альтернатива локальному серверу: Docker", "Docker alternative to the local server"),
         "docker compose up --build\n"
         "docker compose down",
@@ -123,6 +147,14 @@ def add_reference(story: list, verification: dict) -> None:
         (
             "422 · validation_error / empty_message",
             ("Проверьте обязательные поля и длину; вставьте непустое сообщение.", "Check required fields and lengths; provide a non-empty message."),
+        ),
+        (
+            "401 · unauthorized",
+            ("Включён вход менеджера (UI_BASIC_AUTH_*): введите логин и пароль; для curl — -u логин:пароль.", "Manager login (UI_BASIC_AUTH_*) is on: enter the login and password; for curl use -u login:password."),
+        ),
+        (
+            "429 · rate_limited",
+            ("Превышен RATE_LIMIT_PER_MINUTE: подождите Retry-After секунд. За прокси настройте FORWARDED_ALLOW_IPS.", "RATE_LIMIT_PER_MINUTE exceeded: wait Retry-After seconds. Behind a proxy set FORWARDED_ALLOW_IPS."),
         ),
         (
             "503 · knowledge_base_unavailable",
@@ -277,22 +309,20 @@ def add_reference(story: list, verification: dict) -> None:
     if current_run:
         story += [
             p(tr(f"Текущий прогон · {current_base} + рабочие изменения", f"Current run · {current_base} + working changes"), H2),
-            simple_table(
+            _tight_table(
                 [tr("Проверка", "Check"), tr("Результат", "Result")],
                 [[_localized(item["name"]), _localized(item["result"])] for item in current_run],
                 [165, W - 165],
-                [CELL_B, CELL],
             ),
         ]
 
     historical_date = escape(str(verification.get("historical_checked_at", checked_at)))
     story += [
         p(tr(f"Зафиксированные локальные проверки · {historical_date}", f"Recorded local checks · {historical_date}"), H2),
-        simple_table(
+        _tight_table(
             [tr("Проверка", "Check"), tr("Результат сводки", "Recorded result")],
             [[_localized(item["name"]), _localized(item["result"])] for item in verification.get("checks", [])],
             [165, W - 165],
-            [CELL_B, CELL],
         ),
     ]
     if verification.get("http"):

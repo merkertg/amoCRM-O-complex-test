@@ -9,7 +9,7 @@ Sales managers answer customers in amoCRM chats all day. They need a fast, corre
 
 The second block is internal and is never sent automatically. Success criterion: a working MVP that helps a manager answer quickly and spot a relevant upsell.
 
-## Current implementation: Stages 01–07
+## Current implementation: Stages 01–08
 
 | Stage | Result |
 | --- | --- |
@@ -20,6 +20,7 @@ The second block is internal and is never sent automatically. Success criterion:
 | 05 Tests and Docker | 95 pytest tests without network; `python:3.12-slim` image running as a non-root user with a health check; Compose with a read-only knowledge base mount |
 | 06 amoCRM | Lead-card widget (`lcard-1`) calling the backend with `$authorizedAjax` and a one-time JWT; webhook receiver for `message` / `outgoing_message`; REST API v4 client for the lead and the contact first name |
 | 07 CI and quality checks | GitHub Actions on pushes, pull requests and manual runs; Ruff for application, tests and scripts; mypy for all application modules; pytest, documentation links and widget packaging; commands verified locally, remote workflow results not yet verified |
+| 08 Evaluations and access | Offline retrieval evaluation (24 questions, hit@1 ≥ 0.95, recall = 1.0) as a CI step; a 12-scenario dialogue evaluation for a live LLM with deterministic checks and a JSON report; optional HTTP Basic login for the manager UI, `/api/v1/suggest` and `/docs`; a sliding-window generation limit per client IP and per amoCRM user |
 
 ## Stack and responsibility
 
@@ -31,6 +32,7 @@ The second block is internal and is never sent automatically. Success criterion:
 | PyJWT | HS256 verification of amoCRM one-time widget tokens |
 | JSON file | Knowledge base editable without code changes |
 | pytest | Unit and API tests with `FakeLLM` and mocked HTTP |
+| `evals/`, `scripts/run_evals.py` | Retrieval metrics on fixed questions (CI) and rule-checked dialogues with a configured LLM |
 | Ruff, mypy | Code/import checks and application type checks using shared configuration in `pyproject.toml` |
 | GitHub Actions | Runs the same quality commands on Python 3.12 with pinned official actions and read-only repository permissions |
 | Docker, Compose | Reproducible run |
@@ -56,6 +58,8 @@ DialogContext (manual UI/API or amoCRM adapter)
 - **Separation of blocks.** Separate JSON fields, separate UI blocks with an «internal» badge, and server-side removal of internal wording from the customer reply.
 - **Untrusted customer data.** Customer text is isolated in tagged blocks, prompt tags inside it are removed, injection markers produce a warning, and the model has no tools.
 - **Warn, do not block.** Heuristic checks add warnings for the manager instead of failing the request; hard failures are reserved for invalid structure.
+- **Paid calls are guarded.** On a public server the manager UI and `/api/v1/suggest` sit behind a login, and every endpoint that calls the LLM is rate-limited per client IP or amoCRM user.
+- **Measure, then trust.** Retrieval changes are gated by an evaluation in CI; model quality is measured on fixed dialogues before relying on a provider or prompt change.
 - **Privacy.** Logs contain ids, counters and error codes only; phones, e-mails and card numbers are masked before the LLM; REST API v4 returns the contact record, but the adapter uses only its first name and does not pass other contact fields to the LLM; cached chat messages expire.
 
 ## Decisions
@@ -65,6 +69,7 @@ DialogContext (manual UI/API or amoCRM adapter)
 - [ADR 0003](adr/0003-llm-client-structured-output-and-guards.md): OpenAI-compatible client on HTTPX, strict JSON with repair, server-side guards.
 - [ADR 0004](adr/0004-amocrm-widget-and-webhooks.md): amoCRM widget with one-time JWT and webhook message cache.
 - [ADR 0005](adr/0005-ci-and-quality-gates.md): shared local/CI commands, pinned official actions, Ruff and application type checks.
+- [ADR 0006](adr/0006-evaluations-and-access-protection.md): offline retrieval evaluation in CI, live-LLM dialogue evaluation, HTTP Basic login and an in-memory generation rate limit.
 
 ## Architecture
 
@@ -84,13 +89,13 @@ amoCRM ──webhooks──► MessageStore               │
 
 ## Verification
 
-Local: 95 pytest tests; Ruff 0.17.1; mypy 2.4.0 for all 27 application files; documentation links and widget packaging. Earlier local checks also covered the UI and widget in a browser against a stub OpenAI-compatible server, Docker image build/start and logs without personal data. These checks do not establish answer quality with a real LLM or operation in a real amoCRM account.
+Local: 124 pytest tests; Ruff 0.17.1; mypy 2.4.0 for the application and the evaluation runner (30 files); the retrieval evaluation (hit@1 1.0, recall 1.0); documentation links and widget packaging. HTTP Basic and the rate limit were checked on a live Uvicorn with curl, and the 429 message in the browser UI. Earlier local checks also covered the UI and widget in a browser against a stub OpenAI-compatible server, Docker image build/start and logs without personal data. These checks do not establish answer quality with a real LLM or operation in a real amoCRM account.
 
 The GitHub Actions workflow is implemented, but its remote results have not yet been verified. The available GitHub connector could not read workflow runs, and the logged-out browser returned 404 for the repository. A local pass is recorded separately from a successful hosted run. Details: [VERIFICATION.md](VERIFICATION.md); repeat the quality commands using [CI and quality checks](instructions/ci.md).
 
 ## Next steps
 
-- Evaluate a real model on a fixed set of dialogues (grounding, clarification, upsell appropriateness).
+- Run the dialogue evaluation with the chosen production model and record the pass rate.
 - Redis for the message cache to run several replicas.
 - «Save hint as a note» via `POST /api/v4/leads/{id}/notes`.
 - A `card_sdk` tab instead of the right-panel block.

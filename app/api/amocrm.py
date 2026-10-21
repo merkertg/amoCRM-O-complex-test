@@ -60,7 +60,7 @@ def _require_enabled(request: Request) -> None:
 @router.post(
     "/suggest",
     response_model=WidgetSuggestResponse,
-    responses={401: {"model": ErrorResponse, "description": "Нет или неверный X-Auth-Token"}, **ERROR_RESPONSES},
+    responses={**ERROR_RESPONSES, 401: {"model": ErrorResponse, "description": "Нет или неверный X-Auth-Token"}},
     summary="Подсказка для сделки (вызов из виджета amoCRM)",
 )
 async def widget_suggest(
@@ -84,6 +84,7 @@ async def widget_suggest(
         client_id=settings.amocrm_client_id,
         account_base_url=settings.amocrm_base_url,
     )
+    request.app.state.rate_limiter.check(f"amocrm:{user.account_id}:{user.user_id}", scope="amocrm")
     context, info, warnings = await request.app.state.amocrm_adapter.build_context(
         body.lead_id, message=body.message, history_text=body.history_text
     )

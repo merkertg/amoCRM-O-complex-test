@@ -7,6 +7,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import PageBreak, SimpleDocTemplate, Spacer
 
 from guide.diagrams import pipeline_flow, roadmap
+from guide.evaluation import add_evaluation
 from guide.i18n import LANGUAGES, set_language, tr
 from guide.layout import (
     BLUE,
@@ -82,10 +83,10 @@ def add_introduction(story, facts, verification):
         p(tr("От сообщения клиента до двух блоков ответа", "From a customer message to two answer blocks"), lead),
         Spacer(1, 16),
         p(tr(
-            "Практическое руководство по этапам 01–07: архитектура, база знаний, поиск, LLM, "
-            "защитные проверки, интерфейс, тесты, Docker, интеграция с CRM и CI.",
-            "A practical guide to stages 01–07: architecture, knowledge base, retrieval, LLM, "
-            "guards, UI, tests, Docker, CRM integration and CI.",
+            "Практическое руководство по этапам 01–08: архитектура, база знаний, поиск, LLM, "
+            "защитные проверки, интерфейс, тесты, Docker, интеграция с CRM, CI, оценки и защита доступа.",
+            "A practical guide to stages 01–08: architecture, knowledge base, retrieval, LLM, "
+            "guards, UI, tests, Docker, CRM integration, CI, evaluations and access protection.",
         )),
         Spacer(1, 20),
         Diagram(64, roadmap),
@@ -177,6 +178,7 @@ def build(language, facts, counts, verification):
     add_stages_delivery(story, facts, counts)
     add_reference(story, verification)
     add_quality(story, verification)
+    add_evaluation(story, verification)
     suffix = "-en" if language == "en" else ""
     destination = OUTPUT / f"amocrm-sales-assistant-guide{suffix}.pdf"
     document = GuideDocument(

@@ -38,12 +38,12 @@ from guide.layout import (
     rbox,
 )
 
-# Все шесть этапов ТЗ и этап 07 (CI) выполнены.
-STAGES_DONE = 7
+# Все шесть этапов ТЗ и этапы 07 (CI) и 08 (оценка и доступ) выполнены.
+STAGES_DONE = 8
 
 
 def roadmap(c, w, h):
-    """Шесть этапов ТЗ и этап 07 (CI): все выполнены."""
+    """Шесть этапов ТЗ и этапы 07–08: все выполнены."""
     titles = [
         tr("Архитектура и структура", "Architecture and layout"),
         tr("База знаний и поиск", "Knowledge base and retrieval"),
@@ -52,18 +52,19 @@ def roadmap(c, w, h):
         tr("Тесты и Docker", "Tests and Docker"),
         tr("Интеграция с amoCRM", "amoCRM integration"),
         tr("CI и качество кода", "CI and code quality"),
+        tr("Оценка и доступ", "Evaluations and access"),
     ]
-    gap, bh = 7, 58
+    gap, bh = 6, 58
     bw = (w - (len(titles) - 1) * gap) / len(titles)
     y = h - bh
     for index, title in enumerate(titles):
         x = index * (bw + gap)
         rbox(c, x, y, bw, bh, GREEN_L, GREEN, r=7, lw=1)
-        circle_num(c, x + 11, y + bh - 11, 7, str(index + 1), GREEN, WHITE, 8)
+        circle_num(c, x + 10, y + bh - 10, 6.5, str(index + 1), GREEN, WHITE, 7.5)
         status = tr("готово", "done")
-        width = pdfmetrics.stringWidth(status, "PT-Bold", 6.6) + 8
-        chip(c, x + bw - width - 4, y + bh - 17, status, GREEN, WHITE, "PT-Bold", 6.6)
-        lines_in(c, x + bw / 2, y + bh - 24, bw - 6, title, "PT-Bold", 7.8, 9.4, INK)
+        width = pdfmetrics.stringWidth(status, "PT-Bold", 6) + 6
+        chip(c, x + bw - width - 3, y + bh - 16, status, GREEN, WHITE, "PT-Bold", 6, pad=3, h=11)
+        lines_in(c, x + bw / 2, y + bh - 23, bw - 6, title, "PT-Bold", 7.4, 9, INK)
 
 
 def pipeline_flow(c, w, h):
@@ -450,3 +451,35 @@ def adapter_flow(c, w, h):
     arrow(c, 152, h - bh / 2, 198, h - bh / 2)
     poly_arrow(c, [(75, h - bh - 1), (75, h - 1.5 * bh - 14), (198, h - 1.5 * bh - 14)])
     poly_arrow(c, [(75, h - 1.5 * bh - 14), (75, (bh - 6) / 2), (198, (bh - 6) / 2)], dash=[3, 2])
+
+
+def access_flow(c, w, h):
+    """Путь запроса через защиту: публичный путь, HTTP Basic, лимит, pipeline."""
+    bh = 46
+    y = h - bh - 18  # сверху — место для ветки «публичный путь»
+    items = [
+        (tr("Запрос", "Request"), tr("UI, API или виджет", "UI, API or widget"), SOFT, LINE),
+        (tr("Публичный путь?", "Public path?"), tr("/health,\n/api/v1/amocrm/*", "/health,\n/api/v1/amocrm/*"), BLUE_L, BLUE),
+        ("HTTP Basic", tr("если задан\nUI_BASIC_AUTH_*", "if UI_BASIC_AUTH_*\nis set"), VIOLET_L, VIOLET),
+        ("RateLimiter", tr("IP или пользователь\namoCRM, окно 60 с", "IP or amoCRM user,\n60 s window"), AMBER_L, AMBER),
+        ("Pipeline", tr("LLM-генерация", "LLM generation"), GREEN_L, GREEN),
+    ]
+    gap = 14
+    bw = (w - gap * 4) / 5
+    xs = [index * (bw + gap) for index in range(len(items))]
+    for x, (title, sub, fill, edge) in zip(xs, items, strict=True):
+        node(c, x, y, bw, bh, title, sub, fill, edge, 9.2, 7.4)
+        if x:
+            arrow(c, x - gap + 1, y + bh / 2, x - 1, y + bh / 2)
+    for index, code, label in ((2, "401", "unauthorized"), (3, "429", "rate_limited")):
+        node(c, xs[index], 0, bw, 30, code, label, ORANGE_L, ORANGE, 9, 7)
+        arrow(c, xs[index] + bw / 2, y - 1, xs[index] + bw / 2, 31, ORANGE)
+    top = y + bh + 10
+    poly_arrow(
+        c,
+        [(xs[1] + bw / 2, y + bh + 1), (xs[1] + bw / 2, top), (xs[3] + bw / 2, top), (xs[3] + bw / 2, y + bh + 1)],
+        BLUE,
+        dash=[3, 2],
+    )
+    c.setFillColor(BLUE)
+    draw_text(c, (xs[1] + xs[3] + bw) / 2, top + 3, tr("да: без пароля, своя защита", "yes: no login, own protection"), "PT-Italic", 7.2, "center")

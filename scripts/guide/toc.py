@@ -35,6 +35,7 @@ CONTENTS = [
     ("Проверь себя", "Check yourself"),
     ("Итоги проверки", "Verification results"),
     ("CI и качество кода", "CI and code quality"),
+    ("Оценка и защита доступа", "Evaluations and access"),
 ]
 
 # Разделы каждого этапа ТЗ: на обложке оглавление окрашено по этапам.
@@ -46,6 +47,7 @@ STAGE_SECTIONS = {
     5: range(17, 19),
     6: range(19, 24),
     7: range(28, 29),
+    8: range(29, 30),
 }
 
 

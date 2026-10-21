@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-20",
+  "checked_at": "2026-10-21",
   "base_commit": "df465b3",
   "environment": {
     "os": {
@@ -10,11 +10,11 @@
     "docker": "29.8.2"
   },
   "tests": {
-    "total": 95,
-    "passed": 95,
+    "total": 124,
+    "passed": 124,
     "failed": 0,
     "skipped": 0,
-    "seconds": "0.21"
+    "seconds": "0.29"
   },
   "checks": [
     {
@@ -229,17 +229,25 @@
     {
       "ru": "Linux и Windows на хосте (образ Docker — Linux).",
       "en": "Linux and Windows hosts (the Docker image is Linux)."
+    },
+    {
+      "ru": "Оценка диалогов на настоящей LLM: нужен ключ API.",
+      "en": "The dialogue evaluation on a real LLM: it needs an API key."
+    },
+    {
+      "ru": "Интерфейс за паролем HTTP Basic в браузере (на уровне HTTP проверено curl).",
+      "en": "The UI behind HTTP Basic in a browser (checked at the HTTP level with curl)."
     }
   ],
   "historical_checked_at": "2026-10-20",
-  "current_base_commit": "18f1a9b",
+  "current_base_commit": "72b957b",
   "current_run": [
     {
       "name": {
         "ru": "Ruff",
         "en": "Ruff"
       },
-      "command": "python -m ruff check app tests scripts",
+      "command": "python -m ruff check app tests scripts evals",
       "result": {
         "ru": "0.17.1: ошибок нет",
         "en": "0.17.1: all checks passed"
@@ -251,10 +259,10 @@
         "ru": "mypy",
         "en": "mypy"
       },
-      "command": "python -m mypy app",
+      "command": "python -m mypy app evals",
       "result": {
-        "ru": "2.4.0: 27 файлов без ошибок",
-        "en": "2.4.0: 27 source files, no issues"
+        "ru": "2.4.0: 30 файлов без ошибок",
+        "en": "2.4.0: 30 source files, no issues"
       },
       "status": "pass"
     },
@@ -265,8 +273,32 @@
       },
       "command": "python -m pytest",
       "result": {
-        "ru": "95 passed; без сети и ключей",
-        "en": "95 passed; no network or keys"
+        "ru": "124 passed; без сети и ключей",
+        "en": "124 passed; no network or keys"
+      },
+      "status": "pass"
+    },
+    {
+      "name": {
+        "ru": "Оценка поиска",
+        "en": "Retrieval evaluation"
+      },
+      "command": "python scripts/run_evals.py retrieval",
+      "result": {
+        "ru": "24 вопроса: hit@1 1.000, recall 1.000",
+        "en": "24 questions: hit@1 1.000, recall 1.000"
+      },
+      "status": "pass"
+    },
+    {
+      "name": {
+        "ru": "Вход и лимит",
+        "en": "Login and limit"
+      },
+      "command": "uvicorn + curl + browser",
+      "result": {
+        "ru": "curl: 401 без логина, 200 с логином, 429 с Retry-After; UI: плашка 429",
+        "en": "curl: 401 without login, 200 with it, 429 with Retry-After; UI: 429 message"
       },
       "status": "pass"
     },
@@ -301,20 +333,20 @@
       },
       "command": "python scripts/build_guide.py + pdftoppm",
       "result": {
-        "ru": "по 30 страниц, 28 закладок; все страницы RU и EN просмотрены",
-        "en": "30 pages each, 28 bookmarks; every RU and EN page reviewed"
+        "ru": "по 32 страницы, 29 закладок; все страницы RU и EN просмотрены",
+        "en": "32 pages each, 29 bookmarks; every RU and EN page reviewed"
       },
       "status": "pass"
     }
   ],
   "guide": {
     "pages": {
-      "ru": 30,
-      "en": 30
+      "ru": 32,
+      "en": 32
     },
-    "sections": 28,
-    "bookmarks_per_language": 28,
-    "contents_links_per_language": 28,
+    "sections": 29,
+    "bookmarks_per_language": 29,
+    "contents_links_per_language": 29,
     "visual_review": "pass",
     "text_bounds": "pass"
   },
@@ -323,8 +355,14 @@
     "local_checks": "pass",
     "remote_status": "not_verified",
     "result": {
-      "ru": "Локально все пять проверок прошли. Удалённый результат Actions не подтверждён: нет доступа к репозиторию через коннектор и встроенный браузер.",
-      "en": "All five checks passed locally. The hosted Actions result is not verified: the connector and in-app browser cannot access the repository."
+      "ru": "Локально все шесть проверок workflow прошли. Удалённый результат Actions не подтверждён: нет доступа к репозиторию через коннектор, встроенный браузер и gh.",
+      "en": "All six workflow checks passed locally. The hosted Actions result is not verified: the connector, the in-app browser and gh cannot access the repository."
+    }
+  },
+  "stage_08": {
+    "summary": {
+      "ru": "Этап 08 проверен локально: тесты доступа и оценок, оценка поиска, curl и браузер. Оценка диалогов прогнана только на заглушке модели (3 из 12 — ожидаемо для одного заготовленного ответа).",
+      "en": "Stage 08 was verified locally: access and evaluation tests, the retrieval evaluation, curl and the browser. The dialogue suite ran only against a stub model (3 of 12 — expected for one fixed answer)."
     }
   }
 }
