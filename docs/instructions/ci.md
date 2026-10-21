@@ -1,5 +1,8 @@
 # CI and code quality
 
+Russian walkthrough: [CI/CD and Docker](../CI_CD.md). To show the product
+through its manager UI, use the separate [demo guide](../DEMO.md).
+
 [← README](../../README.md) · [All documentation](../../README.md#documentation)
 
 Run the same checks locally and in GitHub Actions. The detailed Russian

@@ -127,3 +127,7 @@ evaluation runner; tests and PDF scripts are outside its scope. The retrieval
 evaluation is described in [Quality evaluations](evaluations.md).
 See [CI instructions](ci.md) and the Russian [Stage 07 guide](../STAGE_07.md).
 Remote Actions results are recorded separately from local checks.
+
+The Russian [demo walkthrough](../DEMO.md) reuses the stub above for a manager
+demonstration. The Russian [CI/CD guide](../CI_CD.md) explains how the checks
+fit together and distinguishes them from manual container operation.

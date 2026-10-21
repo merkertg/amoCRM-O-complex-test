@@ -14,7 +14,7 @@
     "passed": 124,
     "failed": 0,
     "skipped": 0,
-    "seconds": "0.29"
+    "seconds": "0.33"
   },
   "checks": [
     {
@@ -240,29 +240,17 @@
     }
   ],
   "historical_checked_at": "2026-10-20",
-  "current_base_commit": "72b957b",
+  "current_base_commit": "e8acad2",
   "current_run": [
     {
       "name": {
-        "ru": "Ruff",
-        "en": "Ruff"
+        "ru": "Ruff и mypy",
+        "en": "Ruff and mypy"
       },
-      "command": "python -m ruff check app tests scripts evals",
+      "command": "python -m ruff check app tests scripts evals; python -m mypy app evals",
       "result": {
-        "ru": "0.17.1: ошибок нет",
-        "en": "0.17.1: all checks passed"
-      },
-      "status": "pass"
-    },
-    {
-      "name": {
-        "ru": "mypy",
-        "en": "mypy"
-      },
-      "command": "python -m mypy app evals",
-      "result": {
-        "ru": "2.4.0: 30 файлов без ошибок",
-        "en": "2.4.0: 30 source files, no issues"
+        "ru": "Ruff: ошибок нет; mypy: 30 файлов без ошибок",
+        "en": "Ruff passed; mypy: 30 files, no issues"
       },
       "status": "pass"
     },
@@ -292,25 +280,25 @@
     },
     {
       "name": {
-        "ru": "Вход и лимит",
-        "en": "Login and limit"
-      },
-      "command": "uvicorn + curl + browser",
-      "result": {
-        "ru": "curl: 401 без логина, 200 с логином, 429 с Retry-After; UI: плашка 429",
-        "en": "curl: 401 without login, 200 with it, 429 with Retry-After; UI: 429 message"
-      },
-      "status": "pass"
-    },
-    {
-      "name": {
         "ru": "Ссылки документации",
         "en": "Documentation links"
       },
       "command": "python scripts/check_docs.py",
       "result": {
-        "ru": "локальные ссылки и якоря: 0 битых",
-        "en": "local links and anchors: 0 broken"
+        "ru": "31 Markdown-файл; 316 локальных ссылок, 0 битых",
+        "en": "31 Markdown files; 316 local links, 0 broken"
+      },
+      "status": "pass"
+    },
+    {
+      "name": {
+        "ru": "Примеры Bash",
+        "en": "Bash examples"
+      },
+      "command": "bash -n",
+      "result": {
+        "ru": "7 блоков DEMO и CI_CD; команды не выполнялись",
+        "en": "7 DEMO and CI_CD blocks; commands not executed"
       },
       "status": "pass"
     },
@@ -333,20 +321,20 @@
       },
       "command": "python scripts/build_guide.py + pdftoppm",
       "result": {
-        "ru": "по 32 страницы, 29 закладок; все страницы RU и EN просмотрены",
-        "en": "32 pages each, 29 bookmarks; every RU and EN page reviewed"
+        "ru": "по 33 страницы; 30 закладок и ссылок; финальный просмотр завершён",
+        "en": "33 pages each; 30 bookmarks and links; final review completed"
       },
       "status": "pass"
     }
   ],
   "guide": {
     "pages": {
-      "ru": 32,
-      "en": 32
+      "ru": 33,
+      "en": 33
     },
-    "sections": 29,
-    "bookmarks_per_language": 29,
-    "contents_links_per_language": 29,
+    "sections": 30,
+    "bookmarks_per_language": 30,
+    "contents_links_per_language": 30,
     "visual_review": "pass",
     "text_bounds": "pass"
   },
@@ -355,8 +343,8 @@
     "local_checks": "pass",
     "remote_status": "not_verified",
     "result": {
-      "ru": "Локально все шесть проверок workflow прошли. Удалённый результат Actions не подтверждён: нет доступа к репозиторию через коннектор, встроенный браузер и gh.",
-      "en": "All six workflow checks passed locally. The hosted Actions result is not verified: the connector, the in-app browser and gh cannot access the repository."
+      "ru": "Команды CI проверены локально. Удалённый результат GitHub Actions оставлен непроверенным по выбору пользователя.",
+      "en": "CI commands were checked locally. The hosted GitHub Actions result remains unverified at the user's request."
     }
   },
   "stage_08": {
@@ -364,5 +352,131 @@
       "ru": "Этап 08 проверен локально: тесты доступа и оценок, оценка поиска, curl и браузер. Оценка диалогов прогнана только на заглушке модели (3 из 12 — ожидаемо для одного заготовленного ответа).",
       "en": "Stage 08 was verified locally: access and evaluation tests, the retrieval evaluation, curl and the browser. The dialogue suite ran only against a stub model (3 of 12 — expected for one fixed answer)."
     }
+  },
+  "previous_runs": [
+    {
+      "checked_at": "2026-10-21",
+      "current_base_commit": "72b957b",
+      "current_run": [
+        {
+          "name": {
+            "ru": "Ruff",
+            "en": "Ruff"
+          },
+          "command": "python -m ruff check app tests scripts evals",
+          "result": {
+            "ru": "0.17.1: ошибок нет",
+            "en": "0.17.1: all checks passed"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "mypy",
+            "en": "mypy"
+          },
+          "command": "python -m mypy app evals",
+          "result": {
+            "ru": "2.4.0: 30 файлов без ошибок",
+            "en": "2.4.0: 30 source files, no issues"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Тесты сервиса",
+            "en": "Service tests"
+          },
+          "command": "python -m pytest",
+          "result": {
+            "ru": "124 passed; без сети и ключей",
+            "en": "124 passed; no network or keys"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Оценка поиска",
+            "en": "Retrieval evaluation"
+          },
+          "command": "python scripts/run_evals.py retrieval",
+          "result": {
+            "ru": "24 вопроса: hit@1 1.000, recall 1.000",
+            "en": "24 questions: hit@1 1.000, recall 1.000"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Вход и лимит",
+            "en": "Login and limit"
+          },
+          "command": "uvicorn + curl + browser",
+          "result": {
+            "ru": "curl: 401 без логина, 200 с логином, 429 с Retry-After; UI: плашка 429",
+            "en": "curl: 401 without login, 200 with it, 429 with Retry-After; UI: 429 message"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Ссылки документации",
+            "en": "Documentation links"
+          },
+          "command": "python scripts/check_docs.py",
+          "result": {
+            "ru": "локальные ссылки и якоря: 0 битых",
+            "en": "local links and anchors: 0 broken"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Архив виджета",
+            "en": "Widget archive"
+          },
+          "command": "python scripts/build_widget.py",
+          "result": {
+            "ru": "dist/widget.zip, 10 файлов",
+            "en": "dist/widget.zip, 10 files"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "PDF RU и EN",
+            "en": "RU and EN PDFs"
+          },
+          "command": "python scripts/build_guide.py + pdftoppm",
+          "result": {
+            "ru": "по 32 страницы, 29 закладок; все страницы RU и EN просмотрены",
+            "en": "32 pages each, 29 bookmarks; every RU and EN page reviewed"
+          },
+          "status": "pass"
+        }
+      ],
+      "guide": {
+        "pages": {
+          "ru": 32,
+          "en": 32
+        },
+        "sections": 29,
+        "bookmarks_per_language": 29,
+        "contents_links_per_language": 29,
+        "visual_review": "pass",
+        "text_bounds": "pass"
+      }
+    }
+  ],
+  "documentation": {
+    "reference_project": "ai-support-agent",
+    "scope": {
+      "ru": "Только структура документации; этапы 01–08 сохранены.",
+      "en": "Documentation organization only; stages 01–08 preserved."
+    },
+    "walkthroughs": [
+      "docs/DEMO.md",
+      "docs/CI_CD.md"
+    ]
   }
 }

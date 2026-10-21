@@ -4,7 +4,7 @@
 
 The [Russian guide](amocrm-sales-assistant-guide.pdf) and
 [English guide](amocrm-sales-assistant-guide-en.pdf) explain stages 01–08 in
-29 sections. They include diagrams, actual repository excerpts, commands,
+30 sections. They include diagrams, actual repository excerpts, commands,
 troubleshooting, self-check questions and the recorded verification results.
 The contents page and PDF outline link to every section.
 
@@ -35,6 +35,7 @@ Windows font discovery is not implemented or verified.
 - `scripts/guide/reference.py`: commands, errors, self-check and results (24–27).
 - `scripts/guide/quality.py`: Stage 07 CI and local quality checks (section 28).
 - `scripts/guide/evaluation.py`: Stage 08 evaluations and access protection (section 29); runs the offline retrieval suite at build time.
+- `scripts/guide/documentation.py`: documentation layers and reading paths (section 30), aligned with AI Support Agent.
 - `scripts/guide/diagrams.py`, `layout.py`, `toc.py`, `i18n.py`: drawing,
   layout, headings and language selection.
 - `scripts/guide/sources.py`: code excerpts, default settings, retrieval and
@@ -80,7 +81,7 @@ pdftotext -layout docs/guide/amocrm-sales-assistant-guide-en.pdf /tmp/amocrm-gui
 
 Inspect **all** page images in both languages. Check Cyrillic, arrows, code
 line wrapping, table boundaries, diagram labels, headings, page numbers and
-blank/orphan pages. Test the contents links and PDF outline; compare the 29
+blank/orphan pages. Test the contents links and PDF outline; compare the 30
 section titles and test count with the sources. Text extraction alone does
 not verify layout. Fix issues, rebuild and render again.
 

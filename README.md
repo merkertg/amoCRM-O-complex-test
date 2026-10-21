@@ -8,7 +8,7 @@ A Python MVP of an AI assistant for sales managers who chat with customers in am
 
 **Stage 08 adds quality evaluations and access protection.** An offline retrieval evaluation (24 questions, hit@1 and recall gates) runs in CI. A dialogue evaluation (12 scenarios) measures a real LLM through the whole pipeline once a key is configured. Optional HTTP Basic login protects the manager UI, `/api/v1/suggest` and `/docs`, and a per-IP / per-amoCRM-user limit caps paid generations per minute.
 
-**Start with the [quickstart](docs/instructions/quickstart.md)** or the detailed Russian walkthroughs for [stages 01–06](docs/STAGE_01.md), [Stage 07: CI and quality checks](docs/STAGE_07.md) and [Stage 08: evaluations and access protection](docs/STAGE_08.md). Illustrated PDF guides: [Russian](docs/guide/amocrm-sales-assistant-guide.pdf) and [English](docs/guide/amocrm-sales-assistant-guide-en.pdf); [rebuild and verification](docs/guide/README.md). After starting the server, open the manager UI at <http://127.0.0.1:8000> or the API documentation at <http://127.0.0.1:8000/docs>.
+**Start with the [demo walkthrough](docs/DEMO.md)** or the [quickstart](docs/instructions/quickstart.md). The documentation follows the same organization as AI Support Agent: short task instructions, detailed Russian stage guides, practical walkthroughs, design decisions and verification evidence. After starting the server, open the manager UI at <http://127.0.0.1:8000> or the API documentation at <http://127.0.0.1:8000/docs>.
 
 ## Roadmap
 
@@ -18,7 +18,7 @@ A Python MVP of an AI assistant for sales managers who chat with customers in am
 | 02 | Knowledge base (JSON, validation, hot reload) and retrieval | Implemented: 10 products/services, 7 FAQ entries, keyword search with stemming and related items |
 | 03 | LLM client, prompt, two-block structured answer, guards | Implemented; tested with a fake LLM and a stub OpenAI-compatible server, a live LLM requires a key |
 | 04 | FastAPI REST API and the manager UI | Implemented: `/api/v1/suggest`, `/health`, `/api/v1/knowledge-base`, Swagger, responsive UI |
-| 05 | Tests and Docker | Implemented: 95 tests, Dockerfile, Compose, container smoke check |
+| 05 | Tests and Docker | Implemented: test suite (currently 124 tests), Dockerfile, Compose, recorded container smoke check |
 | 06 | amoCRM integration | Implemented: lead-card widget with one-time JWT, chat webhooks, REST API v4 client; checked on a widget mock, a real amoCRM account is not verified |
 | 07 | CI and quality checks | Implemented: GitHub Actions workflow; Ruff, mypy, pytest, documentation links and widget packaging pass locally; remote CI not yet verified |
 | 08 | Quality evaluations and access protection | Implemented: retrieval evaluation gated in CI, live-LLM dialogue evaluation, HTTP Basic login, generation rate limit; 124 tests, mypy over 30 files; a live-LLM evaluation run requires a key |
@@ -38,7 +38,7 @@ Instructions ([docs/instructions/](docs/instructions/)):
 - [Access protection](docs/instructions/access.md): manager login, generation rate limit, what stays public
 - [Project structure](docs/instructions/project-structure.md)
 
-Stage learning guides in Russian:
+Detailed stage guides in Russian:
 
 - [Stage 01: architecture and project structure](docs/STAGE_01.md)
 - [Stage 02: knowledge base and retrieval](docs/STAGE_02.md)
@@ -48,13 +48,24 @@ Stage learning guides in Russian:
 - [Stage 06: amoCRM integration](docs/STAGE_06.md)
 - [Stage 07: CI and quality checks](docs/STAGE_07.md)
 - [Stage 08: evaluations and access protection](docs/STAGE_08.md)
-- [Russian PDF guide](docs/guide/amocrm-sales-assistant-guide.pdf), [English PDF guide](docs/guide/amocrm-sales-assistant-guide-en.pdf) and [rebuild instructions](docs/guide/README.md)
-- [Project verification](docs/VERIFICATION.md)
+
+Practical walkthroughs in Russian:
+
+- [Demo walkthrough](docs/DEMO.md): a 5–7 minute manager demonstration with a local stub, grounded examples and explicit verification limits
+- [CI/CD and Docker guide](docs/CI_CD.md): what the current workflow checks, local commands and manual container operation
+
+Illustrated guides:
+
+- [Russian PDF guide](docs/guide/amocrm-sales-assistant-guide.pdf)
+- [English PDF guide](docs/guide/amocrm-sales-assistant-guide-en.pdf)
+- [Rebuild and visual verification](docs/guide/README.md)
 
 Design and history:
 
 - [Solution approach](docs/APPROACH.md)
 - [Architecture decisions](docs/adr/)
+- [Verification report](docs/VERIFICATION.md): current local checks, recorded earlier runs and unverified integrations
+- [Verification data](docs/guide/verification.json): evidence used by both PDF editions
 - [Development log](docs/DEVELOPMENT_LOG.md)
 
 ## Quick start

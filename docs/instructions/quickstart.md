@@ -4,6 +4,10 @@
 
 Configure an LLM provider, start the service with Docker or locally, open the manager UI and check that it works. Detailed walkthroughs in Russian are in the [Stage 01](../STAGE_01.md) and [Stage 04](../STAGE_04.md) guides.
 
+For a guided demonstration without a live LLM key, follow the Russian
+[demo walkthrough](../DEMO.md). For the automated checks and manual Docker
+workflow, see the Russian [CI/CD guide](../CI_CD.md).
+
 ## Requirements
 
 - An API key of any OpenAI-compatible Chat Completions API (OpenAI, OpenRouter, DeepSeek and others), or a local [Ollama](https://ollama.com) without a key.

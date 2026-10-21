@@ -36,6 +36,7 @@ CONTENTS = [
     ("Итоги проверки", "Verification results"),
     ("CI и качество кода", "CI and code quality"),
     ("Оценка и защита доступа", "Evaluations and access"),
+    ("Карта документации", "Documentation map"),
 ]
 
 # Разделы каждого этапа ТЗ: на обложке оглавление окрашено по этапам.

@@ -7,6 +7,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import PageBreak, SimpleDocTemplate, Spacer
 
 from guide.diagrams import pipeline_flow, roadmap
+from guide.documentation import add_documentation
 from guide.evaluation import add_evaluation
 from guide.i18n import LANGUAGES, set_language, tr
 from guide.layout import (
@@ -179,6 +180,7 @@ def build(language, facts, counts, verification):
     add_reference(story, verification)
     add_quality(story, verification)
     add_evaluation(story, verification)
+    add_documentation(story)
     suffix = "-en" if language == "en" else ""
     destination = OUTPUT / f"amocrm-sales-assistant-guide{suffix}.pdf"
     document = GuideDocument(

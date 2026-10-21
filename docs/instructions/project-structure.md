@@ -49,12 +49,15 @@ amoCRM/
 │       ├── stages_core.py, stages_delivery.py # explanations for stages 01–06
 │       ├── quality.py             # Stage 07: CI and local quality checks
 │       ├── evaluation.py          # Stage 08: evaluations and access protection
+│       ├── documentation.py       # documentation map and suggested reading paths
 │       ├── reference.py           # commands, troubleshooting and verification
 │       └── layout.py, diagrams.py, toc.py, i18n.py # shared layout and translations
 ├── tests/                         # pytest, FakeLLM and MockTransport
 ├── docs/
 │   ├── instructions/              # these short instructions
 │   ├── STAGE_01.md … STAGE_08.md  # detailed Russian guides per stage
+│   ├── DEMO.md                    # guided manager demonstration with a local stub
+│   ├── CI_CD.md                   # Russian CI walkthrough and manual Docker operation
 │   ├── APPROACH.md, adr/          # approach and architecture decisions
 │   ├── DEVELOPMENT_LOG.md         # development log
 │   ├── VERIFICATION.md            # verification report
@@ -68,6 +71,29 @@ amoCRM/
 ├── .env.example                   # all settings with comments
 └── AGENTS.md                      # rules for further work
 ```
+
+## Documentation organization
+
+The same layers are used in AI Support Agent. Stage numbers follow this
+project's roadmap; each guide describes the amoCRM assistant's own behavior.
+Use the [root README](../../README.md#documentation) as the single entry point.
+
+| Layer | Location | Purpose |
+| --- | --- | --- |
+| Project overview | [README.md](../../README.md) | Product, roadmap and complete documentation index |
+| Short task instructions | [instructions/](.) | English commands for setup, usage, knowledge, amoCRM, testing, CI, evaluations and access |
+| Stage learning guides | [STAGE_01.md](../STAGE_01.md) through [STAGE_08.md](../STAGE_08.md) | Detailed Russian explanations and self-check questions |
+| Practical walkthroughs | [DEMO.md](../DEMO.md), [CI_CD.md](../CI_CD.md) | Guided demonstration and explanation of checks/container operation |
+| Design | [APPROACH.md](../APPROACH.md), [adr/](../adr/) | English approach and architecture decisions |
+| Evidence and history | [VERIFICATION.md](../VERIFICATION.md), [DEVELOPMENT_LOG.md](../DEVELOPMENT_LOG.md) | Russian factual results, limitations and completed steps |
+| Illustrated guide | [guide/](../guide/) | Russian/English PDFs, shared verification data and rebuild instructions |
+
+Suggested reading paths:
+
+- First demonstration: [DEMO](../DEMO.md) → [Quickstart](quickstart.md) → [Usage](usage.md).
+- Learning: [Stage 01](../STAGE_01.md) → subsequent stages → [Approach](../APPROACH.md).
+- Development: [Testing](testing.md) → [CI instructions](ci.md) → [CI/CD walkthrough](../CI_CD.md).
+- Evidence: [Verification report](../VERIFICATION.md) → [verification.json](../guide/verification.json).
 
 ## Dependency direction
 
