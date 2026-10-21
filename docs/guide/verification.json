@@ -14,7 +14,7 @@
     "passed": 95,
     "failed": 0,
     "skipped": 0,
-    "seconds": "0.22"
+    "seconds": "0.21"
   },
   "checks": [
     {
@@ -223,8 +223,8 @@
       "en": "Webhook event names in the amoCRM interface."
     },
     {
-      "ru": "CI: в проекте его пока нет.",
-      "en": "CI: the project has none yet."
+      "ru": "Удалённый результат GitHub Actions: workflow настроен, но результат запуска недоступен.",
+      "en": "Hosted GitHub Actions result: the workflow is configured, but run results are inaccessible."
     },
     {
       "ru": "Linux и Windows на хосте (образ Docker — Linux).",
@@ -232,14 +232,38 @@
     }
   ],
   "historical_checked_at": "2026-10-20",
-  "current_base_commit": "0b4b7bf",
+  "current_base_commit": "18f1a9b",
   "current_run": [
+    {
+      "name": {
+        "ru": "Ruff",
+        "en": "Ruff"
+      },
+      "command": "python -m ruff check app tests scripts",
+      "result": {
+        "ru": "0.17.1: ошибок нет",
+        "en": "0.17.1: all checks passed"
+      },
+      "status": "pass"
+    },
+    {
+      "name": {
+        "ru": "mypy",
+        "en": "mypy"
+      },
+      "command": "python -m mypy app",
+      "result": {
+        "ru": "2.4.0: 27 файлов без ошибок",
+        "en": "2.4.0: 27 source files, no issues"
+      },
+      "status": "pass"
+    },
     {
       "name": {
         "ru": "Тесты сервиса",
         "en": "Service tests"
       },
-      "command": ".venv/bin/python -m pytest",
+      "command": "python -m pytest",
       "result": {
         "ru": "95 passed; без сети и ключей",
         "en": "95 passed; no network or keys"
@@ -248,25 +272,25 @@
     },
     {
       "name": {
-        "ru": "Изоляция примеров",
-        "en": "Example isolation"
+        "ru": "Ссылки документации",
+        "en": "Documentation links"
       },
-      "command": "environment override smoke check",
+      "command": "python scripts/check_docs.py",
       "result": {
-        "ru": "демо-база, 5 маршрутов, маскирование, без app.main",
-        "en": "demo KB, 5 routes, PII masking, no app.main"
+        "ru": "локальные ссылки и якоря: 0 битых",
+        "en": "local links and anchors: 0 broken"
       },
       "status": "pass"
     },
     {
       "name": {
-        "ru": "Ссылки документации",
-        "en": "Documentation links"
+        "ru": "Архив виджета",
+        "en": "Widget archive"
       },
-      "command": ".venv/bin/python scripts/check_docs.py",
+      "command": "python scripts/build_widget.py",
       "result": {
-        "ru": "22 Markdown-файла; 165 локальных ссылок, 0 ошибок",
-        "en": "22 Markdown files; 165 local links, 0 broken"
+        "ru": "dist/widget.zip, 10 файлов",
+        "en": "dist/widget.zip, 10 files"
       },
       "status": "pass"
     },
@@ -275,23 +299,32 @@
         "ru": "PDF RU и EN",
         "en": "RU and EN PDFs"
       },
-      "command": ".venv/bin/python scripts/build_guide.py + pdfinfo + pdftoppm",
+      "command": "python scripts/build_guide.py + pdftoppm",
       "result": {
-        "ru": "по 29 страниц; по 27 закладок и ссылок; все страницы просмотрены",
-        "en": "29 pages each; 27 bookmarks and links each; all pages reviewed"
+        "ru": "по 30 страниц, 28 закладок; все страницы RU и EN просмотрены",
+        "en": "30 pages each, 28 bookmarks; every RU and EN page reviewed"
       },
       "status": "pass"
     }
   ],
   "guide": {
     "pages": {
-      "ru": 29,
-      "en": 29
+      "ru": 30,
+      "en": 30
     },
-    "sections": 27,
-    "bookmarks_per_language": 27,
-    "contents_links_per_language": 27,
+    "sections": 28,
+    "bookmarks_per_language": 28,
+    "contents_links_per_language": 28,
     "visual_review": "pass",
     "text_bounds": "pass"
+  },
+  "ci": {
+    "workflow": ".github/workflows/ci.yml",
+    "local_checks": "pass",
+    "remote_status": "not_verified",
+    "result": {
+      "ru": "Локально все пять проверок прошли. Удалённый результат Actions не подтверждён: нет доступа к репозиторию через коннектор и встроенный браузер.",
+      "en": "All five checks passed locally. The hosted Actions result is not verified: the connector and in-app browser cannot access the repository."
+    }
   }
 }

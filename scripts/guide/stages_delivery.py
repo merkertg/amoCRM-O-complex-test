@@ -4,14 +4,19 @@ import json
 
 from reportlab.platypus import KeepTogether, Spacer
 
-from guide.diagrams import adapter_flow, amocrm_sequence, jwt_checks, log_layers, ui_wireframe
+from guide.diagrams import (
+    adapter_flow,
+    amocrm_sequence,
+    jwt_checks,
+    log_layers,
+    ui_wireframe,
+)
 from guide.i18n import tr
 from guide.layout import (
     AMBER,
     AMBER_L,
     BLUE,
     BLUE_L,
-    BODY_S,
     CELL,
     CELL_B,
     CELL_M,

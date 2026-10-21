@@ -29,11 +29,12 @@ def _role_for(prefix: str) -> Role | None:
 
 
 def parse_history_text(text: str) -> list[DialogMessage]:
+    """Parse role-prefixed lines and append unprefixed lines to the last message."""
     messages: list[tuple[Role, list[str]]] = []
     for line in text.replace("\r\n", "\n").split("\n"):
         match = _LINE_RE.match(line)
         role = _role_for(match.group(1)) if match else None
-        if role is not None:
+        if match is not None and role is not None:
             messages.append((role, [match.group(2).strip()]))
         elif line.strip():
             if messages:

@@ -15,7 +15,6 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LINK_LABEL = re.compile(r"(!?)\[([^\]\n]*(?:\[[^\]\n]*\][^\]\n]*)*)\]")
 REFERENCE = re.compile(r"^ {0,3}\[([^\]\n]+)\]:\s*(.+)$", re.MULTILINE)

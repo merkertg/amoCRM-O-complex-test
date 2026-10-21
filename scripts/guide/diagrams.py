@@ -38,12 +38,12 @@ from guide.layout import (
     rbox,
 )
 
-# Все шесть этапов ТЗ выполнены.
-STAGES_DONE = 6
+# Все шесть этапов ТЗ и этап 07 (CI) выполнены.
+STAGES_DONE = 7
 
 
 def roadmap(c, w, h):
-    """Шесть этапов ТЗ: все выполнены."""
+    """Шесть этапов ТЗ и этап 07 (CI): все выполнены."""
     titles = [
         tr("Архитектура и структура", "Architecture and layout"),
         tr("База знаний и поиск", "Knowledge base and retrieval"),
@@ -51,18 +51,19 @@ def roadmap(c, w, h):
         tr("FastAPI и интерфейс", "FastAPI and UI"),
         tr("Тесты и Docker", "Tests and Docker"),
         tr("Интеграция с amoCRM", "amoCRM integration"),
+        tr("CI и качество кода", "CI and code quality"),
     ]
-    gap, bh = 8, 52
-    bw = (w - 5 * gap) / 6
+    gap, bh = 7, 58
+    bw = (w - (len(titles) - 1) * gap) / len(titles)
     y = h - bh
     for index, title in enumerate(titles):
         x = index * (bw + gap)
         rbox(c, x, y, bw, bh, GREEN_L, GREEN, r=7, lw=1)
-        circle_num(c, x + 12, y + bh - 12, 7.5, str(index + 1), GREEN, WHITE, 8.5)
+        circle_num(c, x + 11, y + bh - 11, 7, str(index + 1), GREEN, WHITE, 8)
         status = tr("готово", "done")
-        width = pdfmetrics.stringWidth(status, "PT-Bold", 7) + 8
-        chip(c, x + bw - width - 4, y + bh - 18, status, GREEN, WHITE, "PT-Bold", 7)
-        lines_in(c, x + bw / 2, y + bh - 25, bw - 8, title, "PT-Bold", 8.2, 9.8, INK)
+        width = pdfmetrics.stringWidth(status, "PT-Bold", 6.6) + 8
+        chip(c, x + bw - width - 4, y + bh - 17, status, GREEN, WHITE, "PT-Bold", 6.6)
+        lines_in(c, x + bw / 2, y + bh - 24, bw - 6, title, "PT-Bold", 7.8, 9.4, INK)
 
 
 def pipeline_flow(c, w, h):
@@ -75,7 +76,8 @@ def pipeline_flow(c, w, h):
         (tr("Валидация", "Validate"), tr("JSON → Suggestion,\n1 починка", "JSON → Suggestion,\n1 repair"), AMBER_L, AMBER),
         (tr("Пост-проверки", "Post-checks"), tr("допродажа, утечки,\nсуммы", "upsell, leaks,\namounts"), GREEN_L, GREEN),
     ]
-    gap, bh = 10, 64
+    # Блоки выше текста: номер в углу не должен закрывать заголовок шага.
+    gap, bh = 10, 78
     bw = (w - 5 * gap) / 6
     y = h - 34 - bh
     node(c, 0, h - 26, 120, 22, "DialogContext", "", SOFT, LINE, 9)
@@ -410,6 +412,10 @@ def amocrm_sequence(c, w, h):
     for src, dst, label, color in messages:
         x1, x2 = xs[src], xs[dst]
         arrow(c, x1, y, x2 + (-3 if x2 > x1 else 3), y, color, 1.1, 5)
+        # Белая подложка: пунктир участников не должен перечёркивать подпись.
+        label_w = pdfmetrics.stringWidth(label, "PT", 7.6) + 8
+        c.setFillColor(WHITE)
+        c.rect((x1 + x2) / 2 - label_w / 2, y + 2, label_w, 10, stroke=0, fill=1)
         c.setFillColor(TEXT)
         draw_text(c, (x1 + x2) / 2, y + 4, label, "PT", 7.6, "center")
         y -= gap

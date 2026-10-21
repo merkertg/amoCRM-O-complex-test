@@ -48,8 +48,11 @@ class AmoCRMAdapter:
         self._history_limit = history_limit
 
     async def _load_crm(self, lead_id: int) -> tuple[str | None, list[int]]:
-        """Возвращает (имя клиента, id контактов сделки)."""
-        lead = await self._client.get_lead(lead_id)
+        """Load the customer's first name and contact IDs for a lead."""
+        client = self._client
+        # build_context calls this helper only when the REST client is configured.
+        assert client is not None
+        lead = await client.get_lead(lead_id)
         if lead is None:
             raise LeadNotFoundError()
         contacts = (lead.get("_embedded") or {}).get("contacts") or []
@@ -57,7 +60,7 @@ class AmoCRMAdapter:
         main = next((c for c in contacts if c.get("is_main")), contacts[0] if contacts else None)
         name = None
         if main and main.get("id"):
-            contact = await self._client.get_contact(int(main["id"])) or {}
+            contact = await client.get_contact(int(main["id"])) or {}
             name = (contact.get("first_name") or "").strip() or (contact.get("name") or "").strip() or None
             if name:
                 name = name.split()[0][:50]

@@ -1,5 +1,7 @@
 """Основной REST API: генерация подсказок, состояние сервиса, база знаний."""
 
+from typing import Any
+
 from fastapi import APIRouter, Request
 
 from app.core.assistant import SalesAssistant
@@ -8,7 +10,8 @@ from app.schemas import DialogContext, ErrorResponse, SuggestRequest, SuggestRes
 
 router = APIRouter()
 
-ERROR_RESPONSES = {
+# Match FastAPI's response metadata contract, including named status codes.
+ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
     422: {"model": ErrorResponse, "description": "Некорректный запрос"},
     502: {"model": ErrorResponse, "description": "Модель вернула некорректный ответ"},
     503: {"model": ErrorResponse, "description": "LLM или база знаний недоступны"},

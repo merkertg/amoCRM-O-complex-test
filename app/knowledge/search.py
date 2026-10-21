@@ -179,6 +179,7 @@ class KnowledgeIndex:
         return hits + self._related(hits, max_related)
 
     def _related(self, hits: list[SearchHit], limit: int) -> list[SearchHit]:
+        """Append unique related products from the validated knowledge base."""
         seen = {h.id for h in hits}
         related: list[SearchHit] = []
         for hit in hits:
@@ -190,5 +191,7 @@ class KnowledgeIndex:
                     continue
                 seen.add(related_id)
                 rel = self.kb.get_product(related_id)
+                # KnowledgeBase validation requires every related ID to exist.
+                assert rel is not None
                 related.append(SearchHit(rel.id, "product", rel.name, 0.0, "related"))
         return related

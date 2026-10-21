@@ -5,6 +5,7 @@
 
 import logging
 import traceback
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -91,7 +92,8 @@ def create_app(
         adapter = AmoCRMAdapter(amocrm_client, message_store, settings.amocrm_history_limit)
 
     @asynccontextmanager
-    async def lifespan(_: FastAPI):
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        """Close configured external clients when the application shuts down."""
         yield
         for client in (llm, amocrm_client):
             close = getattr(client, "aclose", None)

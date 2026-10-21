@@ -104,3 +104,22 @@ The link checker verifies local Markdown targets and heading anchors without
 network access. The guide builder collects tests to check the recorded count;
 it does not run pytest or repeat the recorded browser/Docker checks. Guide
 examples use repository defaults, ignoring `.env` and environment overrides.
+
+## CI and code quality
+
+The same local checks run in [GitHub Actions](../../.github/workflows/ci.yml):
+
+```bash
+.venv/bin/python -m ruff check app tests scripts
+.venv/bin/python -m mypy app
+.venv/bin/python -m pytest
+.venv/bin/python scripts/check_docs.py
+.venv/bin/python scripts/build_widget.py
+```
+
+Install `requirements-dev.txt` first. Ruff checks code errors and import
+ordering across the application, tests and scripts. Mypy requires typed
+function signatures and checks bodies across all application modules;
+tests and PDF scripts are outside its initial scope.
+See [CI instructions](ci.md) and the Russian [Stage 07 guide](../STAGE_07.md).
+Remote Actions results are recorded separately from local checks.

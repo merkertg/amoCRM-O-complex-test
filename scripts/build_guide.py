@@ -2,16 +2,36 @@
 
 import argparse
 import json
+
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import PageBreak, SimpleDocTemplate, Spacer
 
 from guide.diagrams import pipeline_flow, roadmap
 from guide.i18n import LANGUAGES, set_language, tr
 from guide.layout import (
-    BLUE, BLUE_L, BODY, GREEN, GREEN_L, INK, LINE, MARGIN,
-    MUTED, PAGE_H, PAGE_W, TEAL, TEAL_L, W, Diagram, SectionTitle,
-    callout, cards, p, register_fonts, simple_table,
+    BLUE,
+    BLUE_L,
+    BODY,
+    GREEN,
+    GREEN_L,
+    INK,
+    LINE,
+    MARGIN,
+    MUTED,
+    PAGE_H,
+    PAGE_W,
+    TEAL,
+    TEAL_L,
+    Diagram,
+    SectionTitle,
+    W,
+    callout,
+    cards,
+    p,
+    register_fonts,
+    simple_table,
 )
+from guide.quality import add_quality
 from guide.reference import add_reference
 from guide.sources import PROJECT_ROOT, project_facts, test_counts
 from guide.stages_core import add_stages_core
@@ -62,13 +82,13 @@ def add_introduction(story, facts, verification):
         p(tr("От сообщения клиента до двух блоков ответа", "From a customer message to two answer blocks"), lead),
         Spacer(1, 16),
         p(tr(
-            "Практическое руководство по этапам 01–06: архитектура, база знаний, поиск, LLM, "
-            "защитные проверки, интерфейс, тесты, Docker и интеграция с CRM.",
-            "A practical guide to stages 01–06: architecture, knowledge base, retrieval, LLM, "
-            "guards, UI, tests, Docker and CRM integration.",
+            "Практическое руководство по этапам 01–07: архитектура, база знаний, поиск, LLM, "
+            "защитные проверки, интерфейс, тесты, Docker, интеграция с CRM и CI.",
+            "A practical guide to stages 01–07: architecture, knowledge base, retrieval, LLM, "
+            "guards, UI, tests, Docker, CRM integration and CI.",
         )),
         Spacer(1, 20),
-        Diagram(62, roadmap),
+        Diagram(64, roadmap),
         Spacer(1, 18),
         cards([
             (str(facts["products"]), tr("товаров и услуг в базе знаний", "products and services in the knowledge base"), TEAL, TEAL_L),
@@ -130,7 +150,7 @@ def add_introduction(story, facts, verification):
     ]
     section(story, 2, tr("Один pipeline для ручного ввода и виджета amoCRM.", "One pipeline for manual input and the amoCRM widget."))
     story += [
-        Diagram(145, pipeline_flow), Spacer(1, 16),
+        Diagram(158, pipeline_flow), Spacer(1, 16),
         simple_table([tr("Шаг", "Step"), tr("Что происходит", "What happens")], [
             ["1. DialogContext", tr("Текущий вопрос, история, имя и источник запроса.", "Current question, history, name and request source.")],
             ["2. KnowledgeIndex", tr("Поиск по ключевым словам и добавление связанных позиций.", "Keyword retrieval and related items.")],
@@ -156,6 +176,7 @@ def build(language, facts, counts, verification):
     add_stages_core(story, facts)
     add_stages_delivery(story, facts, counts)
     add_reference(story, verification)
+    add_quality(story, verification)
     suffix = "-en" if language == "en" else ""
     destination = OUTPUT / f"amocrm-sales-assistant-guide{suffix}.pdf"
     document = GuideDocument(

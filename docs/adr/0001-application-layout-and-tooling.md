@@ -15,11 +15,11 @@ The specification asks for a simple working MVP on Python 3.12+, FastAPI, Pydant
 - `AppError` subclasses carry the HTTP status, a machine code and a message for the manager; one exception handler turns them into `{"error": {"code", "message"}}`.
 - `create_app(settings, llm_client, amocrm_client)` wires dependencies explicitly so tests pass fakes without monkeypatching.
 - Settings come from the environment and `.env` through pydantic-settings; secrets are `SecretStr`.
-- Dependencies are pinned in `requirements.txt` (runtime) and `requirements-dev.txt` (+ pytest) and installed with pip into `.venv` or the Docker image.
+- Dependencies are pinned in `requirements.txt` (runtime) and `requirements-dev.txt` (+ pytest, Ruff and mypy) and installed with pip into `.venv` or the Docker image.
 - pytest finds the package through `[tool.pytest.ini_options] pythonpath = ["."]`.
 
 ## Consequences
 
 - No build step and no packaging; the same commands work in `.venv` and in Docker.
 - pip does not lock transitive dependencies. If reproducibility of the whole tree becomes important, move to uv with `uv.lock`, as in the other AI Forge projects.
-- There is no linter, type checker or CI yet; they are listed as next steps.
+- Stage 07 adds Ruff, mypy and CI as described in [ADR 0005](0005-ci-and-quality-gates.md); the application architecture remains unchanged.

@@ -9,7 +9,7 @@ Sales managers answer customers in amoCRM chats all day. They need a fast, corre
 
 The second block is internal and is never sent automatically. Success criterion: a working MVP that helps a manager answer quickly and spot a relevant upsell.
 
-## Current implementation: Stages 01–06
+## Current implementation: Stages 01–07
 
 | Stage | Result |
 | --- | --- |
@@ -19,6 +19,7 @@ The second block is internal and is never sent automatically. Success criterion:
 | 04 API and UI | `POST /api/v1/suggest`, `GET /health`, `GET /api/v1/knowledge-base`, Swagger; plain HTML/CSS/JS UI with two visually separated blocks |
 | 05 Tests and Docker | 95 pytest tests without network; `python:3.12-slim` image running as a non-root user with a health check; Compose with a read-only knowledge base mount |
 | 06 amoCRM | Lead-card widget (`lcard-1`) calling the backend with `$authorizedAjax` and a one-time JWT; webhook receiver for `message` / `outgoing_message`; REST API v4 client for the lead and the contact first name |
+| 07 CI and quality checks | GitHub Actions on pushes, pull requests and manual runs; Ruff for application, tests and scripts; mypy for all application modules; pytest, documentation links and widget packaging; commands verified locally, remote workflow results not yet verified |
 
 ## Stack and responsibility
 
@@ -30,6 +31,8 @@ The second block is internal and is never sent automatically. Success criterion:
 | PyJWT | HS256 verification of amoCRM one-time widget tokens |
 | JSON file | Knowledge base editable without code changes |
 | pytest | Unit and API tests with `FakeLLM` and mocked HTTP |
+| Ruff, mypy | Code/import checks and application type checks using shared configuration in `pyproject.toml` |
+| GitHub Actions | Runs the same quality commands on Python 3.12 with pinned official actions and read-only repository permissions |
 | Docker, Compose | Reproducible run |
 
 No vector database, queues, agents or microservices: the knowledge base has tens of items and a request takes seconds.
@@ -53,7 +56,7 @@ DialogContext (manual UI/API or amoCRM adapter)
 - **Separation of blocks.** Separate JSON fields, separate UI blocks with an «internal» badge, and server-side removal of internal wording from the customer reply.
 - **Untrusted customer data.** Customer text is isolated in tagged blocks, prompt tags inside it are removed, injection markers produce a warning, and the model has no tools.
 - **Warn, do not block.** Heuristic checks add warnings for the manager instead of failing the request; hard failures are reserved for invalid structure.
-- **Privacy.** Logs contain ids, counters and error codes only; phones, e-mails and card numbers are masked before the LLM; only the contact first name is read from amoCRM; cached chat messages expire.
+- **Privacy.** Logs contain ids, counters and error codes only; phones, e-mails and card numbers are masked before the LLM; REST API v4 returns the contact record, but the adapter uses only its first name and does not pass other contact fields to the LLM; cached chat messages expire.
 
 ## Decisions
 
@@ -61,6 +64,7 @@ DialogContext (manual UI/API or amoCRM adapter)
 - [ADR 0002](adr/0002-knowledge-base-and-keyword-retrieval.md): JSON knowledge base and keyword retrieval instead of a vector database.
 - [ADR 0003](adr/0003-llm-client-structured-output-and-guards.md): OpenAI-compatible client on HTTPX, strict JSON with repair, server-side guards.
 - [ADR 0004](adr/0004-amocrm-widget-and-webhooks.md): amoCRM widget with one-time JWT and webhook message cache.
+- [ADR 0005](adr/0005-ci-and-quality-gates.md): shared local/CI commands, pinned official actions, Ruff and application type checks.
 
 ## Architecture
 
@@ -80,12 +84,13 @@ amoCRM ──webhooks──► MessageStore               │
 
 ## Verification
 
-Local: 95 pytest tests; the UI and the widget clicked through in a browser against a stub OpenAI-compatible server; Docker image built and started; logs checked for personal data. Not verified: answer quality of a real LLM, a real amoCRM account, CI (there is no CI yet). Details: [VERIFICATION.md](VERIFICATION.md).
+Local: 95 pytest tests; Ruff 0.17.1; mypy 2.4.0 for all 27 application files; documentation links and widget packaging. Earlier local checks also covered the UI and widget in a browser against a stub OpenAI-compatible server, Docker image build/start and logs without personal data. These checks do not establish answer quality with a real LLM or operation in a real amoCRM account.
+
+The GitHub Actions workflow is implemented, but its remote results have not yet been verified. The available GitHub connector could not read workflow runs, and the logged-out browser returned 404 for the repository. A local pass is recorded separately from a successful hosted run. Details: [VERIFICATION.md](VERIFICATION.md); repeat the quality commands using [CI and quality checks](instructions/ci.md).
 
 ## Next steps
 
 - Evaluate a real model on a fixed set of dialogues (grounding, clarification, upsell appropriateness).
-- GitHub Actions with pytest, Ruff and mypy.
 - Redis for the message cache to run several replicas.
 - «Save hint as a note» via `POST /api/v4/leads/{id}/notes`.
 - A `card_sdk` tab instead of the right-panel block.

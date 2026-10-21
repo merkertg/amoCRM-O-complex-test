@@ -41,7 +41,6 @@ from guide.layout import (
     callout,
     cards,
     code_block,
-    mono,
     p,
     simple_table,
 )

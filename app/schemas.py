@@ -103,7 +103,8 @@ class Suggestion(BaseModel):
         mode="before",
     )
     @classmethod
-    def _strip(cls, value, info: ValidationInfo):
+    def _strip(cls, value: object, info: ValidationInfo) -> object:
+        """Normalise optional text before Pydantic validates its concrete type."""
         if value is None and info.field_name == "upsell_reason":
             return ""
         if isinstance(value, str):

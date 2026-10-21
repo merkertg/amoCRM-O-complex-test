@@ -4,6 +4,7 @@
 
 ```text
 amoCRM/
+├── .github/workflows/ci.yml        # Python 3.12 quality checks on push, PR and manual run
 ├── app/                           # Python package of the service
 │   ├── main.py                    # create_app(): wiring, error handlers, CORS, static UI
 │   ├── config.py                  # Settings from environment and .env (pydantic-settings)
@@ -37,20 +38,25 @@ amoCRM/
 │   ├── build_widget.py            # dist/widget.zip for amoCRM
 │   ├── build_guide.py             # PDF guide in Russian and English
 │   ├── check_docs.py              # offline local Markdown links and anchors
-│   └── guide/                     # PDF guide modules
+│   └── guide/                     # bilingual PDF guide modules
+│       ├── sources.py             # project facts and source-code excerpts
+│       ├── stages_core.py, stages_delivery.py # explanations for stages 01–06
+│       ├── quality.py             # Stage 07: CI and local quality checks
+│       ├── reference.py           # commands, troubleshooting and verification
+│       └── layout.py, diagrams.py, toc.py, i18n.py # shared layout and translations
 ├── tests/                         # pytest, FakeLLM and MockTransport
 ├── docs/
 │   ├── instructions/              # these short instructions
-│   ├── STAGE_01.md … STAGE_06.md  # detailed Russian guides per stage
+│   ├── STAGE_01.md … STAGE_07.md  # detailed Russian guides per stage
 │   ├── APPROACH.md, adr/          # approach and architecture decisions
 │   ├── DEVELOPMENT_LOG.md         # development log
 │   ├── VERIFICATION.md            # verification report
 │   └── guide/                     # PDF guide, verification.json, rebuild instructions
 ├── Dockerfile, docker-compose.yml # container image and local stack
 ├── requirements.txt               # runtime dependencies, pinned
-├── requirements-dev.txt           # + pytest
+├── requirements-dev.txt           # runtime dependencies + pytest, Ruff and mypy
 ├── requirements-guide.txt         # + ReportLab for PDF authoring
-├── pyproject.toml                 # project metadata and pytest settings
+├── pyproject.toml                 # project metadata; pytest, Ruff and mypy settings
 ├── .env.example                   # all settings with comments
 └── AGENTS.md                      # rules for further work
 ```
@@ -76,8 +82,34 @@ filterwarnings = [
     "error::DeprecationWarning:app.*",
     "ignore:Using `httpx` with `starlette.testclient`",
 ]
+
+[tool.ruff]
+target-version = "py312"
+src = [".", "scripts"]
+extend-exclude = [".claude"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["app"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+strict_equality = true
+enable_error_code = ["ignore-without-code"]
 ```
 
 - `pythonpath = ["."]` lets tests import `app` without installing the project.
 - Deprecation warnings raised by our own code fail the tests.
 - Starlette 1.x warns that its TestClient prefers `httpx2`; the application itself uses `httpx` as the specification requires, so the warning is ignored in tests only.
+- Ruff checks `app`, `tests` and `scripts` for code errors and consistent imports; long prompts and teaching examples are not subject to a line-length rule.
+- mypy checks all 27 application files, including function signatures and bodies, without blanket import or error exclusions. Tests and PDF authoring modules remain outside its scope.
+
+## Quality workflow
+
+[.github/workflows/ci.yml](../../.github/workflows/ci.yml) runs on pushes, pull requests and manual dispatch. It installs `requirements-dev.txt`, then runs Ruff, mypy, pytest, the documentation link checker and the widget builder. Dependency and action downloads require network access; tests use `FakeLLM` and `httpx.MockTransport` without contacting a provider or amoCRM.
+
+Runtime dependencies stay in `requirements.txt`; pinned development tools are in `requirements-dev.txt`; PDF authoring dependencies stay in `requirements-guide.txt`. The workflow does not build or visually verify PDFs, build Docker images, or call a live LLM or amoCRM account. See [CI and quality checks](ci.md) for local commands and hosted-run verification.
