@@ -8,6 +8,11 @@ The [Russian guide](amocrm-sales-assistant-guide.pdf) and
 troubleshooting, self-check questions and the recorded verification results.
 The contents page and PDF outline link to every section.
 
+## Earlier editions
+
+The [archive](archive/README.md) preserves earlier PDF editions and identifies
+their dates. Use the current guides linked above for the latest instructions.
+
 ## Build
 
 Use Python 3.12 or newer from the project root:
