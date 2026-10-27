@@ -91,7 +91,7 @@ amoCRM ──webhooks──► MessageStore               │
 
 Local: 124 pytest tests; Ruff 0.17.1; mypy 2.4.0 for the application and the evaluation runner (30 files); the retrieval evaluation (hit@1 1.0, recall 1.0); documentation links and widget packaging. HTTP Basic and the rate limit were checked on a live Uvicorn with curl, and the 429 message in the browser UI. Earlier local checks also covered the UI and widget in a browser against a stub OpenAI-compatible server, Docker image build/start and logs without personal data. These checks do not establish answer quality with a real LLM or operation in a real amoCRM account.
 
-The GitHub Actions workflow is implemented, but its remote results have not yet been verified. The available GitHub connector could not read workflow runs, and the logged-out browser returned 404 for the repository. A local pass is recorded separately from a successful hosted run. Details: [VERIFICATION.md](VERIFICATION.md); repeat the quality commands using [CI and quality checks](instructions/ci.md).
+The GitHub Actions workflow is implemented, but its remote results have not yet been verified. The available GitHub connector could not read workflow runs, and the logged-out browser returned 404 for the repository. A local pass is recorded separately from a successful hosted run. Details: [VERIFICATION.md](VERIFICATION.md); repeat the quality commands using [CI and quality checks](instructions/ci-and-delivery.md).
 
 ## Next steps
 

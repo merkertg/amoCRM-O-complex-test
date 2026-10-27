@@ -125,7 +125,7 @@ ordering across the application, tests, scripts and evaluations. Mypy requires
 typed function signatures and checks bodies across the application and the
 evaluation runner; tests and PDF scripts are outside its scope. The retrieval
 evaluation is described in [Quality evaluations](evaluations.md).
-See [CI instructions](ci.md) and the Russian [Stage 07 guide](../STAGE_07.md).
+See [CI instructions](ci-and-delivery.md) and the Russian [Stage 07 guide](../STAGE_07.md).
 Remote Actions results are recorded separately from local checks.
 
 The Russian [demo walkthrough](../DEMO.md) reuses the stub above for a manager

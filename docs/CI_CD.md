@@ -1,6 +1,6 @@
 # CI/CD: проверки проекта и запуск контейнера
 
-[README](../README.md) · [Короткая инструкция по CI](instructions/ci.md) ·
+[README](../README.md) · [Короткая инструкция по CI](instructions/ci-and-delivery.md) ·
 [Этап 07](STAGE_07.md) · [Демонстрация](DEMO.md)
 
 Этот документ объясняет, что GitHub должен проверять после обновления

@@ -1,9 +1,9 @@
-# CI and code quality
+# CI and delivery
+
+[← README](../../README.md) · [All documentation](../../README.md#documentation) · [Releases](../RELEASES.md)
 
 Russian walkthrough: [CI/CD and Docker](../CI_CD.md). To show the product
 through its manager UI, use the separate [demo guide](../DEMO.md).
-
-[← README](../../README.md) · [All documentation](../../README.md#documentation)
 
 Run the same checks locally and in GitHub Actions. The detailed Russian
 walkthrough is [Stage 07](../STAGE_07.md). The workflow is
@@ -77,6 +77,20 @@ record the actual run result in [VERIFICATION.md](../VERIFICATION.md).
 | Broken documentation link | Fix the relative destination or heading anchor shown by `check_docs.py` |
 | Widget build failure | Restore the required file or valid locale/manifest JSON, then rebuild |
 | Cancelled run | Open the newer run for the same ref; cancellation is not a passing result |
+
+## Delivery
+
+There is no automatic publication: the workflow checks the code and packages
+the widget, but nothing is uploaded or deployed.
+
+| Artifact | Built by | Where it goes | Who delivers it |
+| --- | --- | --- | --- |
+| `dist/widget.zip` | `scripts/build_widget.py`, also in CI | amoCRM → амоМаркет → integration → «режим редактирования» | A manager with administrator rights in amoCRM, manually — see [amoCRM integration](amocrm.md#2-upload-the-widget) |
+| Docker image | `docker build` or `docker compose up --build`, locally only | Your server | You; there is no registry publication and CI does not build the image |
+| PDF guides | `scripts/build_guide.py`, locally only | `docs/guide/` in Git | The author of the change, after a visual review |
+
+Version numbers, the release checklist and rollback are described in
+[Releases](../RELEASES.md).
 
 ## Separate manual checks
 

@@ -79,8 +79,8 @@ def add_quality(story: list, verification: dict) -> None:
         p(escape(loc(verification["ci"]["result"])), SMALL),
         p(tr(
             "При ошибке откройте упавший шаг в Actions и повторите его команду локально. "
-            "Подробный разбор и ограничения: docs/STAGE_07.md и docs/instructions/ci.md.",
+            "Подробный разбор и ограничения: docs/STAGE_07.md и docs/instructions/ci-and-delivery.md.",
             "On failure, open the failed Actions step and repeat its command locally. "
-            "Details and limitations: docs/STAGE_07.md and docs/instructions/ci.md.",
+            "Details and limitations: docs/STAGE_07.md and docs/instructions/ci-and-delivery.md.",
         ), SMALL),
     ]

@@ -19,7 +19,7 @@ Stages 01–06 provide the MVP, offline tests and local verification procedures.
 
 ## Consequences
 
-- Developers can reproduce the quality commands locally using [CI and quality checks](../instructions/ci.md). CI requires no provider keys, amoCRM tokens or customer data.
+- Developers can reproduce the quality commands locally using [CI and quality checks](../instructions/ci-and-delivery.md). CI requires no provider keys, amoCRM tokens or customer data.
 - A successful workflow checks Python code, application typing, the offline test suite, documentation targets and widget packaging. It does not prove model answer quality, operation in a real amoCRM account, container health or PDF layout.
 - Local verification passed with Ruff 0.17.1, mypy 2.4.0 over 27 application files and 95 pytest tests. Remote GitHub Actions execution has not yet been verified: the available connector could not read workflow runs and the logged-out browser returned 404 for the repository. This limitation remains separate from local check results.
 - Redis for multiple application replicas remains a later change; this stage retains the in-memory message cache and the manager's manual control over customer messages.

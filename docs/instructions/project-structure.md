@@ -92,7 +92,7 @@ Suggested reading paths:
 
 - First demonstration: [DEMO](../DEMO.md) → [Quickstart](quickstart.md) → [Usage](usage.md).
 - Learning: [Stage 01](../STAGE_01.md) → subsequent stages → [Approach](../APPROACH.md).
-- Development: [Testing](testing.md) → [CI instructions](ci.md) → [CI/CD walkthrough](../CI_CD.md).
+- Development: [Testing](testing.md) → [CI instructions](ci-and-delivery.md) → [CI/CD walkthrough](../CI_CD.md).
 - Evidence: [Verification report](../VERIFICATION.md) → [verification.json](../guide/verification.json).
 
 ## Dependency direction
@@ -146,4 +146,4 @@ enable_error_code = ["ignore-without-code"]
 
 [.github/workflows/ci.yml](../../.github/workflows/ci.yml) runs on pushes, pull requests and manual dispatch. It installs `requirements-dev.txt`, then runs Ruff, mypy, pytest, the offline retrieval evaluation, the documentation link checker and the widget builder. Dependency and action downloads require network access; tests use `FakeLLM` and `httpx.MockTransport` without contacting a provider or amoCRM.
 
-Runtime dependencies stay in `requirements.txt`; pinned development tools are in `requirements-dev.txt`; PDF authoring dependencies stay in `requirements-guide.txt`. The workflow does not build or visually verify PDFs, build Docker images, or call a live LLM or amoCRM account. See [CI and quality checks](ci.md) for local commands and hosted-run verification.
+Runtime dependencies stay in `requirements.txt`; pinned development tools are in `requirements-dev.txt`; PDF authoring dependencies stay in `requirements-guide.txt`. The workflow does not build or visually verify PDFs, build Docker images, or call a live LLM or amoCRM account. See [CI and quality checks](ci-and-delivery.md) for local commands and hosted-run verification.
