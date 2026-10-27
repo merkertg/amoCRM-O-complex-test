@@ -8,6 +8,9 @@
   - `docs/instructions/` — короткие английские инструкции по задачам
     (запуск, использование, база знаний, amoCRM, проверки, структура);
   - `docs/STAGE_NN.md` — подробное русское руководство каждого этапа;
+  - `docs/CI_CD.md` — подробное русское руководство по CI и ручной доставке;
+  - `docs/DEMO.md`, `docs/RELEASES.md`, `docs/RECOVERY.md` и
+    `docs/DEPENDENCY_UPDATES.md` — демонстрация и эксплуатационные разборы;
   - `docs/APPROACH.md` и `docs/adr/` — подход и архитектурные решения
     на английском;
   - `docs/DEVELOPMENT_LOG.md` и `docs/VERIFICATION.md` — журнал и отчёт

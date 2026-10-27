@@ -27,10 +27,12 @@ def add_documentation(story: list) -> None:
     story += [
         simple_table([tr("Где читать", "Where to read"), tr("Для чего", "Purpose")], [
             ["README.md", tr("Описание, дорожная карта и общее оглавление.", "Overview, roadmap and complete documentation index.")],
-            ["docs/instructions/", tr("Короткие английские инструкции: запуск, использование, проверки и интеграция.", "Short English task instructions: setup, usage, verification and integration.")],
+            ["docs/instructions/", tr("Краткие инструкции: запуск, Windows, использование, проверки, интеграция, копии и приватность.", "Task instructions: setup, Windows, usage, checks, integration, backup and privacy.")],
             ["docs/STAGE_01.md … STAGE_08.md", tr("Подробные русские руководства восьми этапов и вопросы для самопроверки.", "Detailed Russian guides to eight stages and self-check questions.")],
             ["docs/DEMO.md", tr("Показ работы менеджера за 5–7 минут: заглушка, два блока, проверка и копирование.", "A 5–7 minute manager walkthrough: stub, two blocks, review and copying.")],
             ["docs/CI_CD.md", tr("Русский разбор CI и ручного запуска контейнера; фактические границы доставки.", "Russian walkthrough of CI and manual container operation; actual delivery scope.")],
+            ["docs/RELEASES.md + RECOVERY.md", tr("Ручной выпуск и восстановление после сбоев.", "Manual release and recovery after failures.")],
+            ["docs/DEPENDENCY_UPDATES.md", tr("Ручное обновление закреплённых зависимостей.", "Manual updates of pinned dependencies.")],
             ["docs/APPROACH.md + docs/adr/", tr("Подход и архитектурные решения на английском.", "Approach and architecture decisions in English.")],
             ["docs/VERIFICATION.md", tr("Текущие локальные проверки, ранее записанные результаты и ограничения.", "Current local checks, earlier recorded results and limitations.")],
             ["docs/DEVELOPMENT_LOG.md", tr("Какие шаги выполнены и что изменилось.", "Completed steps and what changed.")],
@@ -41,11 +43,11 @@ def add_documentation(story: list) -> None:
         p(tr(
             "<b>Показ продукта:</b> DEMO → quickstart → usage.<br/>"
             "<b>Изучение:</b> STAGE_01 → следующие этапы → APPROACH.<br/>"
-            "<b>Разработка:</b> testing → ci → CI_CD.<br/>"
+            "<b>Разработка:</b> testing → ci-and-delivery → CI_CD.<br/>"
             "<b>Проверенные результаты:</b> VERIFICATION → verification.json.",
             "<b>Product demonstration:</b> DEMO → quickstart → usage.<br/>"
             "<b>Learning:</b> STAGE_01 → subsequent stages → APPROACH.<br/>"
-            "<b>Development:</b> testing → ci → CI_CD.<br/>"
+            "<b>Development:</b> testing → ci-and-delivery → CI_CD.<br/>"
             "<b>Verified results:</b> VERIFICATION → verification.json.",
         )),
         Spacer(1, 12),

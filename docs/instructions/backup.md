@@ -46,7 +46,9 @@ ls -l ~/amocrm-backups
 по которой сервис загружает базу знаний:
 
 ```bash
-.venv/bin/python -c "from pathlib import Path; from app.knowledge.models import KnowledgeBase; kb = KnowledgeBase.model_validate_json(Path('$HOME/amocrm-backups/<имя файла>.json').read_text(encoding='utf-8')); print(len(kb.products), len(kb.faq))"
+# Замените дату и время в пути на имя своей копии из ls выше.
+knowledge_backup="$HOME/amocrm-backups/knowledge_base-20261027-090000.json"
+.venv/bin/python -c 'import sys; from pathlib import Path; from app.knowledge.models import KnowledgeBase; kb = KnowledgeBase.model_validate_json(Path(sys.argv[1]).read_text(encoding="utf-8")); print(len(kb.products), len(kb.faq))' "$knowledge_backup"
 ```
 
 Для демо-базы ожидается `10 7` — число позиций и разделов FAQ. Ошибка
@@ -55,7 +57,7 @@ ls -l ~/amocrm-backups
 ## Восстановить базу знаний
 
 ```bash
-cp ~/amocrm-backups/<имя файла>.json data/knowledge_base.json
+cp "$knowledge_backup" data/knowledge_base.json
 curl -s http://127.0.0.1:8000/health
 .venv/bin/python scripts/run_evals.py retrieval
 ```
@@ -72,13 +74,14 @@ curl -s http://127.0.0.1:8000/health
 ## Восстановить настройки
 
 ```bash
-cp <расшифрованная копия> .env
-docker compose up --detach
+# Сначала расшифруйте копию настроек в указанный защищённый файл вне Git.
+cp "$HOME/amocrm-backups/settings-decrypted.env" .env
+docker compose up --detach --force-recreate
 curl -s http://127.0.0.1:8000/health
 ```
 
 Настройки читаются при запуске, поэтому после замены `.env` контейнер
-нужно пересоздать (`docker compose up --detach`) или перезапустить локальный
+нужно пересоздать (`docker compose up --detach --force-recreate`) или перезапустить локальный
 Uvicorn.
 
 ## Как это проверяется

@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-21",
+  "checked_at": "2026-10-27",
   "base_commit": "df465b3",
   "environment": {
     "os": {
@@ -14,7 +14,7 @@
     "passed": 124,
     "failed": 0,
     "skipped": 0,
-    "seconds": "0.33"
+    "seconds": "0.36"
   },
   "checks": [
     {
@@ -240,17 +240,17 @@
     }
   ],
   "historical_checked_at": "2026-10-20",
-  "current_base_commit": "e8acad2",
+  "current_base_commit": "50ad6e2",
   "current_run": [
     {
       "name": {
         "ru": "Ruff и mypy",
         "en": "Ruff and mypy"
       },
-      "command": "python -m ruff check app tests scripts evals; python -m mypy app evals",
+      "command": ".venv/bin/python -m ruff check app tests scripts evals; .venv/bin/python -m mypy app evals",
       "result": {
-        "ru": "Ruff: ошибок нет; mypy: 30 файлов без ошибок",
-        "en": "Ruff passed; mypy: 30 files, no issues"
+        "ru": "Ошибок нет; mypy: 30 файлов",
+        "en": "No issues; mypy: 30 files"
       },
       "status": "pass"
     },
@@ -259,10 +259,10 @@
         "ru": "Тесты сервиса",
         "en": "Service tests"
       },
-      "command": "python -m pytest",
+      "command": ".venv/bin/python -m pytest",
       "result": {
-        "ru": "124 passed; без сети и ключей",
-        "en": "124 passed; no network or keys"
+        "ru": "124 passed, 0 skipped; без сети и ключей",
+        "en": "124 passed, 0 skipped; no network or keys"
       },
       "status": "pass"
     },
@@ -271,7 +271,7 @@
         "ru": "Оценка поиска",
         "en": "Retrieval evaluation"
       },
-      "command": "python scripts/run_evals.py retrieval",
+      "command": ".venv/bin/python scripts/run_evals.py retrieval",
       "result": {
         "ru": "24 вопроса: hit@1 1.000, recall 1.000",
         "en": "24 questions: hit@1 1.000, recall 1.000"
@@ -283,10 +283,10 @@
         "ru": "Ссылки документации",
         "en": "Documentation links"
       },
-      "command": "python scripts/check_docs.py",
+      "command": ".venv/bin/python scripts/check_docs.py",
       "result": {
-        "ru": "31 Markdown-файл; 316 локальных ссылок, 0 битых",
-        "en": "31 Markdown files; 316 local links, 0 broken"
+        "ru": "39 Markdown-файлов; 398 локальных ссылок, 0 битых",
+        "en": "39 Markdown files; 398 local links, 0 broken"
       },
       "status": "pass"
     },
@@ -295,10 +295,10 @@
         "ru": "Примеры Bash",
         "en": "Bash examples"
       },
-      "command": "bash -n",
+      "command": "bash -n for all Markdown Bash fences",
       "result": {
-        "ru": "7 блоков DEMO и CI_CD; команды не выполнялись",
-        "en": "7 DEMO and CI_CD blocks; commands not executed"
+        "ru": "71 блок; синтаксис корректен, команды не выполнялись",
+        "en": "71 blocks; syntax valid, commands not executed"
       },
       "status": "pass"
     },
@@ -307,10 +307,10 @@
         "ru": "Архив виджета",
         "en": "Widget archive"
       },
-      "command": "python scripts/build_widget.py",
+      "command": ".venv/bin/python scripts/build_widget.py",
       "result": {
-        "ru": "dist/widget.zip, 10 файлов",
-        "en": "dist/widget.zip, 10 files"
+        "ru": "dist/widget.zip собран",
+        "en": "dist/widget.zip built"
       },
       "status": "pass"
     },
@@ -319,10 +319,10 @@
         "ru": "PDF RU и EN",
         "en": "RU and EN PDFs"
       },
-      "command": "python scripts/build_guide.py + pdftoppm",
+      "command": ".venv/bin/python scripts/build_guide.py + pdftoppm + pdftotext -bbox",
       "result": {
-        "ru": "по 33 страницы; 30 закладок и ссылок; финальный просмотр завершён",
-        "en": "33 pages each; 30 bookmarks and links; final review completed"
+        "ru": "По 33 страницы, 30 закладок и ссылок; все страницы просмотрены",
+        "en": "33 pages each, 30 bookmarks and links; every page reviewed"
       },
       "status": "pass"
     }
@@ -343,8 +343,8 @@
     "local_checks": "pass",
     "remote_status": "not_verified",
     "result": {
-      "ru": "Команды CI проверены локально. Удалённый результат GitHub Actions оставлен непроверенным по выбору пользователя.",
-      "en": "CI commands were checked locally. The hosted GitHub Actions result remains unverified at the user's request."
+      "ru": "Команды CI выполнены локально. Итоговый запуск GitHub Actions пока не наблюдался.",
+      "en": "CI commands ran locally. No hosted GitHub Actions run has yet been observed for the final commit."
     }
   },
   "stage_08": {
@@ -354,6 +354,116 @@
     }
   },
   "previous_runs": [
+    {
+      "checked_at": "2026-10-21",
+      "current_base_commit": "e8acad2",
+      "current_run": [
+        {
+          "name": {
+            "ru": "Ruff и mypy",
+            "en": "Ruff and mypy"
+          },
+          "command": "python -m ruff check app tests scripts evals; python -m mypy app evals",
+          "result": {
+            "ru": "Ruff: ошибок нет; mypy: 30 файлов без ошибок",
+            "en": "Ruff passed; mypy: 30 files, no issues"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Тесты сервиса",
+            "en": "Service tests"
+          },
+          "command": "python -m pytest",
+          "result": {
+            "ru": "124 passed; без сети и ключей",
+            "en": "124 passed; no network or keys"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Оценка поиска",
+            "en": "Retrieval evaluation"
+          },
+          "command": "python scripts/run_evals.py retrieval",
+          "result": {
+            "ru": "24 вопроса: hit@1 1.000, recall 1.000",
+            "en": "24 questions: hit@1 1.000, recall 1.000"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Ссылки документации",
+            "en": "Documentation links"
+          },
+          "command": "python scripts/check_docs.py",
+          "result": {
+            "ru": "31 Markdown-файл; 316 локальных ссылок, 0 битых",
+            "en": "31 Markdown files; 316 local links, 0 broken"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Примеры Bash",
+            "en": "Bash examples"
+          },
+          "command": "bash -n",
+          "result": {
+            "ru": "7 блоков DEMO и CI_CD; команды не выполнялись",
+            "en": "7 DEMO and CI_CD blocks; commands not executed"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "Архив виджета",
+            "en": "Widget archive"
+          },
+          "command": "python scripts/build_widget.py",
+          "result": {
+            "ru": "dist/widget.zip, 10 файлов",
+            "en": "dist/widget.zip, 10 files"
+          },
+          "status": "pass"
+        },
+        {
+          "name": {
+            "ru": "PDF RU и EN",
+            "en": "RU and EN PDFs"
+          },
+          "command": "python scripts/build_guide.py + pdftoppm",
+          "result": {
+            "ru": "по 33 страницы; 30 закладок и ссылок; финальный просмотр завершён",
+            "en": "33 pages each; 30 bookmarks and links; final review completed"
+          },
+          "status": "pass"
+        }
+      ],
+      "guide": {
+        "pages": {
+          "ru": 33,
+          "en": 33
+        },
+        "sections": 30,
+        "bookmarks_per_language": 30,
+        "contents_links_per_language": 30,
+        "visual_review": "pass",
+        "text_bounds": "pass"
+      },
+      "ci": {
+        "workflow": ".github/workflows/ci.yml",
+        "local_checks": "pass",
+        "remote_status": "not_verified",
+        "result": {
+          "ru": "Команды CI проверены локально. Удалённый результат GitHub Actions оставлен непроверенным по выбору пользователя.",
+          "en": "CI commands were checked locally. The hosted GitHub Actions result remains unverified at the user's request."
+        }
+      }
+    },
     {
       "checked_at": "2026-10-21",
       "current_base_commit": "72b957b",
@@ -477,6 +587,16 @@
     "walkthroughs": [
       "docs/DEMO.md",
       "docs/CI_CD.md"
+    ],
+    "checked_at": "2026-10-27",
+    "operations": [
+      "docs/instructions/windows.md",
+      "docs/instructions/backup.md",
+      "docs/instructions/privacy.md",
+      "docs/RELEASES.md",
+      "docs/RECOVERY.md",
+      "docs/DEPENDENCY_UPDATES.md",
+      "docs/PROJECT_STATUS_2026-10-27.md"
     ]
   }
 }

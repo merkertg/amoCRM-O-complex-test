@@ -343,7 +343,7 @@ def add_stages_delivery(story, facts, test_counts):
                 [tr("Ключи", "Keys"), tr("lead:{id} и contact:{id} — сообщение без сделки найдётся по контакту", "lead:{id} and contact:{id} — a message without a lead is found by contact")],
                 [tr("Дубли", "Duplicates"), tr("amoCRM повторяет доставку при сбое; тот же id игнорируется", "amoCRM redelivers on failure; the same id is ignored")],
                 [tr("Размер", "Size"), tr("AMOCRM_HISTORY_LIMIT + 10 сообщений на ключ, до 5000 ключей", "AMOCRM_HISTORY_LIMIT + 10 messages per key, up to 5000 keys")],
-                [tr("Срок жизни", "TTL"), tr("24 часа (AMOCRM_MESSAGE_TTL_HOURS) — ПДн не копятся", "24 hours (AMOCRM_MESSAGE_TTL_HOURS) — PII does not pile up")],
+                [tr("Срок жизни", "TTL"), tr("24 часа по умолчанию; фильтрация при чтении, очистка при чтении/вытеснении", "24 hours by default; filter on read, remove on read/eviction")],
                 [tr("Секрет", "Secret"), tr("?secret=… сравнивается hmac.compare_digest; в лог не попадает", "?secret=… is compared with hmac.compare_digest; never logged")],
                 [tr("Хранение", "Storage"), tr("память процесса: один воркер, пусто после перезапуска; для реплик — Redis", "process memory: one worker, empty after restart; Redis for replicas")],
             ],

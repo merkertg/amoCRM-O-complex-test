@@ -58,6 +58,10 @@ amoCRM/
 │   ├── STAGE_01.md … STAGE_08.md  # detailed Russian guides per stage
 │   ├── DEMO.md                    # guided manager demonstration with a local stub
 │   ├── CI_CD.md                   # Russian CI walkthrough and manual Docker operation
+│   ├── RELEASES.md                # versioning and manual image/widget release
+│   ├── RECOVERY.md                # service, provider and knowledge-file recovery
+│   ├── DEPENDENCY_UPDATES.md      # pinned direct dependencies and manual updates
+│   ├── PROJECT_STATUS_2026-10-27.md # dated status and outstanding checks
 │   ├── APPROACH.md, adr/          # approach and architecture decisions
 │   ├── DEVELOPMENT_LOG.md         # development log
 │   ├── VERIFICATION.md            # verification report
@@ -81,9 +85,9 @@ Use the [root README](../../README.md#documentation) as the single entry point.
 | Layer | Location | Purpose |
 | --- | --- | --- |
 | Project overview | [README.md](../../README.md) | Product, roadmap and complete documentation index |
-| Short task instructions | [instructions/](.) | English commands for setup, usage, knowledge, amoCRM, testing, CI, evaluations and access |
+| Short task instructions | [instructions/](.) | Task instructions for setup, Windows, usage, knowledge, amoCRM, testing, CI, evaluations, access, backup and privacy |
 | Stage learning guides | [STAGE_01.md](../STAGE_01.md) through [STAGE_08.md](../STAGE_08.md) | Detailed Russian explanations and self-check questions |
-| Practical walkthroughs | [DEMO.md](../DEMO.md), [CI_CD.md](../CI_CD.md) | Guided demonstration and explanation of checks/container operation |
+| Practical walkthroughs | [DEMO.md](../DEMO.md), [CI_CD.md](../CI_CD.md), [RELEASES.md](../RELEASES.md), [RECOVERY.md](../RECOVERY.md), [DEPENDENCY_UPDATES.md](../DEPENDENCY_UPDATES.md) | Demonstration, checks, manual releases, recovery and dependency updates |
 | Design | [APPROACH.md](../APPROACH.md), [adr/](../adr/) | English approach and architecture decisions |
 | Evidence and history | [VERIFICATION.md](../VERIFICATION.md), [DEVELOPMENT_LOG.md](../DEVELOPMENT_LOG.md) | Russian factual results, limitations and completed steps |
 | Illustrated guide | [guide/](../guide/) | Russian/English PDFs, shared verification data and rebuild instructions |
