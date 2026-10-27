@@ -59,7 +59,7 @@ does not persist checkout credentials and does not use application secrets.
 It installs `requirements-dev.txt`, then runs the six checks in the order
 shown above (the retrieval evaluation was added in Stage 08). If a step fails, later checks are skipped.
 
-After pushing, open [the repository's Actions page](https://github.com/merkertg/AI--amoCRM/actions),
+After pushing, open [the repository's Actions page](https://github.com/merkertg/amoCRM-O-complex-test/actions),
 select **CI**, choose the run for the intended commit and inspect every
 step. A local pass and a workflow file do not establish a remote CI pass;
 record the actual run result in [VERIFICATION.md](../VERIFICATION.md).

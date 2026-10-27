@@ -58,7 +58,7 @@ git fetch origin && git status -sb
 
 И то, чего CI не делает:
 
-- открыть [Actions](https://github.com/merkertg/AI--amoCRM/actions)
+- открыть [Actions](https://github.com/merkertg/amoCRM-O-complex-test/actions)
   и убедиться, что запуск для этого коммита зелёный — локальный успех его
   не заменяет;
 - собрать образ и проверить контейнер (раздел 4);
